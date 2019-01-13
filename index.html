@@ -1,184 +1,193 @@
 <!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.8.0">
-  <meta charset="utf-8">
-  
-
-  
-  <title>徐琦的博客</title>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="徐琦的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
-<meta property="og:site_name" content="徐琦的博客">
-<meta property="og:locale" content="default">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="徐琦的博客">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
   
-    <link rel="alternate" href="/atom.xml" title="徐琦的博客" type="application/atom+xml">
+    <link rel="icon" href="/favicon.ico">
   
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+    
+  <title>徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-</html>
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">徐琦的博客</a>
-      </h1>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
-    </div>
+        <li class="nav-item">
+          
+            <a href="/" class="item-link active">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
   </div>
 </header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope="" itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/01/06/hello-world/" class="article-date">
-  <time datetime="2019-01-06T03:26:55.110Z" itemprop="datePublished">2019-01-06</time>
-</a>
+
+  <main id="index">
+  <div class="posts-list">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+      <section>
+        <a href="/2019/01/13/Netty中的泛型/">
+          <h3 class="post-head">
+            Netty中的泛型
+          </h3>
+        </a>
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/01/06/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/06/hello-world/" data-id="cjqki7jnd000028v86uivfmqv" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li></ul>
-    </div>
+        <div class="post-content">
+          
+            
+              
+                <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/13</time>
+          
+            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty/">Netty</a>
   </div>
 
 
-  
+
+          
+          
+            <span class="seperator">|</span>
+             
+                <i class="fa fa-tag" aria-hidden="true"></i>
+              
+             
+  <a href="/tags/#泛型" class="tag">泛型</a>
+
+
+          
+        </div>
+      </section>
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
+      <section>
+        <a href="/2019/01/13/整理Blog内容到GitHub-Pages/">
+          <h3 class="post-head">
+            整理Blog内容到GitHub Pages
+          </h3>
+        </a>
         
-          <li>
-            <a href="/2019/01/06/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
+        <div class="post-content">
+          
+            
+              
+                <p>因为GitHub Pages已经是程序员博客的大势所趋，再加上以前写的东西比较混乱，决定痛下决心进行整理，希望能有个好的开始。</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/13</time>
+          
+            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/其他/">其他</a>
   </div>
 
-  
-</aside>
-        
+
+
+          
+          
+        </div>
+      </section>
+    
+  </div>
+  <aside>
+    
+    <div class="search">
+      <div class="content">
+        <form action="//www.google.com/search" target="_blank" class="search-form">
+          <input type="text" name="q" maxlength="20" placeholder="Search">
+          <input type="hidden" name="sitesearch" value="http://yoursite.com">
+        </form>
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+    
+    
+      <div class="avatar">
+        <img src="/images/8927407.jpg" alt="avatar">
+          
+            <div class="content">
+                <span>专注于应用程序框架开发</span>
+            </div>
+          
+      </div>
+    
+    
+      <div class="categories">
+        <h1>
+          Categories
+        </h1>
+        <div class="content">
+          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a></li></ul>
+        </div>
+      </div>
+    
+    
+      <div class="links">
+        <h1>
+          Blogroll
+        </h1>
+        <div class="content">
+          
+            <a href="https://www.baidu.com/" target="_blank">百度</a>
+          
+            <a href="https://www.google.com/" target="_blank">谷歌</a>
+          
+            <a href="https://www.zhihu.com/" target="_blank">知乎</a>
+          
+        </div>
+      </div>
+    
+  </aside>
+</main>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
     </div>
   </div>
 </footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
 
 
 
-  </div>
 </body>
 </html>

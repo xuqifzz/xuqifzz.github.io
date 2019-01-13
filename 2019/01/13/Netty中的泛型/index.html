@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Netty中的泛型 | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Netty中的泛型</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/13</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty/">Netty</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#泛型" class="tag">泛型</a>
+
+
+            
+          </div>
+          <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
+<h3 id="启动器类"><a href="#启动器类" class="headerlink" title="启动器类"></a>启动器类</h3><p>Netty只提供了<code>Bootstrap</code>以及<code>ServerBootstrap</code>两个启动器类, 其基类是一个泛型类, 定义如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBootstrap</span>&lt;</span></span><br><span class="line"><span class="class">        <span class="title">B</span> <span class="keyword">extends</span> <span class="title">AbstractBootstrap</span>&lt;<span class="title">B</span>, <span class="title">C</span>&gt;, </span></span><br><span class="line"><span class="class">        <span class="title">C</span> <span class="keyword">extends</span> <span class="title">Channel</span></span></span><br><span class="line"><span class="class">        &gt;  <span class="keyword">implements</span> <span class="title">Cloneable</span></span></span><br></pre></td></tr></table></figure>
+<p>乍一看去去这个类的泛型参数定义挺复杂的, 实际上这个类只有一个泛型参数, 那就是<code>C extends Channel</code>, 这个参数表示接收一个Channel的子类作为类型参数.</p>
+<p>所以<code>AbstractBootstrap</code>的定义本该是像下面这样简单的<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractBootstrap</span>&lt;<span class="title">C</span> <span class="keyword">extends</span> <span class="title">Channel</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以多出来的<code>B extends AbstractBootstrap&lt;B, C&gt;</code>是什么鬼?</p>
+<p>实际上这是为了方便最终用户以链式调用的方式使用启动器类的一个实现技巧, <code>B extends AbstractBootstrap&lt;B, C&gt;</code>中的<code>B</code>就是指用户实际使用的启动器类, 这个启动器类是AbstractBootstrap的子类.</p>
+<p>举个栗子, 如果不添加这个参数, 以<code>class AbstractBootstrap&lt;C extends Channel&gt;</code>的方式来定义<code>AbstractBootstrap</code>, 那么它的<code>group</code>方法的前面只能是:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AbstractBootstrap&lt;C&gt; <span class="title">group</span><span class="params">(EventLoopGroup group)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>而用户写下的如下代码便无法编译</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">b.group(bossGroup).childHandler( ...)</span><br></pre></td></tr></table></figure>
+<p>无法编译的原因是<code>AbstractBootstrap</code>并未定义<code>childHandler</code>方法, 是这是子类<code>ServerBootstrap</code>自己定义的方法.而<code>gropu</code>方法返回的是<code>AbstractBootstrap</code>, 自然无法调用子类定义的方法.</p>
+<p>而如果在<code>AbstractBootstrap</code>中加上的表示子类自身的泛型参数<code>B extends AbstractBootstrap&lt;B, C&gt;</code>, 那么<code>group</code>方法便可定义成<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> B <span class="title">group</span><span class="params">(EventLoopGroup group)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>因为返回值是B, 也就是子类本身, 在上面的例子中返回的是<code>ServerBootstrap</code>, 这样一来, 链式调用childHandler就没有问题了</p>
+<h3 id="异步操作类"><a href="#异步操作类" class="headerlink" title="异步操作类"></a>异步操作类</h3><p>在<code>Promise</code>的<code>addListener</code>的参数乍一看令人震惊, 下面是<code>addListener</code>的签名以及<code>GenericFutureListener</code>的定义:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function">Promise&lt;V&gt; <span class="title">addListener</span><span class="params">(GenericFutureListener&lt;? extends Future&lt;? <span class="keyword">super</span> V&gt;&gt; listener)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">GenericFutureListener</span>&lt;<span class="title">F</span> <span class="keyword">extends</span> <span class="title">Future</span>&lt;?&gt;&gt; <span class="keyword">extends</span> <span class="title">EventListener</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">operationComplete</span><span class="params">(F future)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>GenericFutureListener</code>并没有什么特别的, 它接收一个<code>Future&lt;?&gt;</code>的子类, 并利用这个类型参数定义了操作完成时的回调方法的签名。</p>
+<p>而<code>addListener</code>中<code>GenericFutureListener</code>的类型参数<code>&lt;? extends Future&lt;? super V&gt;&gt;</code>是比较有趣的, 它表示接收一个<code>Future&lt;? super V&gt;</code>的子类, 这里详细解释一下这里为何是<code>super</code>, 而不是<code>extends</code>:</p>
+<p>因为这里我们需要监听的参数是至少是<code>V</code>, 所以<code>V</code>的父类的监听器可以正常工作, 而<code>V</code>子类的监听器却不能保证能工作。</p>
+<p>再举个栗子, 比如我们有个继承链为 <code>food-&gt;fruit-&gt;apple</code>, 如果需要一个监听器(<code>Listener</code>)来处理<code>fruit</code>, 那么可以传入一个处理<code>food</code>的监听器, 因为<code>fruit</code>一定是<code>food</code>, 但不能传入一个处理<code>apple</code>的监听器, 因为<code>fruit</code>不一定是<code>apple</code>, 也有可能是<code>orange</code>。</p>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动器类"><span class="toc-number">2.</span> <span class="toc-text">启动器类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作类"><span class="toc-number">3.</span> <span class="toc-text">异步操作类</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
