@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>搬瓦工主机修改SWAP分区大小 | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>搬瓦工主机修改SWAP分区大小</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2015/12/14</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/VPS/">VPS</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#linux" class="tag">linux</a>
+
+  <a href="/tags/#系统优化" class="tag">系统优化</a>
+
+
+            
+          </div>
+          <p>搬瓦工主机的默认虚拟内存空间总是很小, 所以需要为其配置更大的虚拟内存</p>
+<h3 id="查看SWAP分区大小"><a href="#查看SWAP分区大小" class="headerlink" title="查看SWAP分区大小"></a>查看SWAP分区大小</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">free -h</span><br><span class="line">free -m</span><br></pre></td></tr></table></figure>
+<h3 id="删除所有SWAP分区"><a href="#删除所有SWAP分区" class="headerlink" title="删除所有SWAP分区"></a>删除所有SWAP分区</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">swapoff -a</span><br></pre></td></tr></table></figure>
+<h3 id="添加一个swap文件作为swap"><a href="#添加一个swap文件作为swap" class="headerlink" title="添加一个swap文件作为swap"></a>添加一个swap文件作为swap</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 其中 bs是每块的大小，count是块的数量，bs*count，就是swap文件的大小了，这里就是1M*1024=1G。大家可以自己调整count的数量。</span><br><span class="line"># 此外，/root/swapfile是swap文件的路径，可以根据需求修改。</span><br><span class="line">dd if=/dev/zero of=/root/swapfile bs=1M count=1024</span><br><span class="line"># 建议将权限设置为600</span><br><span class="line">chmod 600 /root/swapfile</span><br><span class="line"></span><br><span class="line"># 格式化swap文件</span><br><span class="line">mkswap /root/swapfile</span><br></pre></td></tr></table></figure>
+<h3 id="启用swap分区文件"><a href="#启用swap分区文件" class="headerlink" title="启用swap分区文件"></a>启用swap分区文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">swapon /root/swapfile</span><br></pre></td></tr></table></figure>
+<h3 id="添加开机启动"><a href="#添加开机启动" class="headerlink" title="添加开机启动"></a>添加开机启动</h3><p>修改 <code>/etc/fstab</code> 这个文件，添加或者修改这一行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/root/swapfile swap swap defaults 0 0</span><br></pre></td></tr></table></figure>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#查看SWAP分区大小"><span class="toc-number">1.</span> <span class="toc-text">查看SWAP分区大小</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除所有SWAP分区"><span class="toc-number">2.</span> <span class="toc-text">删除所有SWAP分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加一个swap文件作为swap"><span class="toc-number">3.</span> <span class="toc-text">添加一个swap文件作为swap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启用swap分区文件"><span class="toc-number">4.</span> <span class="toc-text">启用swap分区文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加开机启动"><span class="toc-number">5.</span> <span class="toc-text">添加开机启动</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

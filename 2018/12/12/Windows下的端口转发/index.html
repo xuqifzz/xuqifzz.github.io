@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Windows下的端口转发 | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Windows下的端口转发</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018/12/12</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/网络运维/">网络运维</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Windows" class="tag">Windows</a>
+
+  <a href="/tags/#网络运维" class="tag">网络运维</a>
+
+
+            
+          </div>
+          <h3 id="使用powershell中的netsh命令"><a href="#使用powershell中的netsh命令" class="headerlink" title="使用powershell中的netsh命令"></a>使用powershell中的netsh命令</h3><p>端口转发是网络运维中常用到的功能, <code>Windows</code>已经自带了端口转发功能, 可以通过在<code>PowerShell</code>中调用<code>netsh interface portproxy</code>实现, 一般格式如下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netsh interface portproxy add v4tov4 listenaddress=$Lhost listenport=$Lport connectaddress=$Rhost connectport=$Rport</span><br></pre></td></tr></table></figure>
+<p>参数说明可以通过调用<code>netsh interface portproxy add v4tov4 ?</code>进行查看, 比如要监听本地的8554端口, 将其转发到192.168.31.39:554上(进行RTSP流转发).可以调用如下命令:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8554 connectaddress=192.168.31.39 connectport=554</span><br></pre></td></tr></table></figure>
+<p>另外, <code>netsh interface portproxy</code>还支持一些管理命令, 这些命令可以通过<code>netsh interface portproxy ?</code>进行查看, 下面是一份清单:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">add</td>
+<td style="text-align:left">在一个表格中添加一个配置项。</td>
+</tr>
+<tr>
+<td style="text-align:left">delete</td>
+<td style="text-align:left">从一个表格中删除一个配置项。</td>
+</tr>
+<tr>
+<td style="text-align:left">dump</td>
+<td style="text-align:left">显示一个配置脚本。</td>
+</tr>
+<tr>
+<td style="text-align:left">help</td>
+<td style="text-align:left">显示命令列表。</td>
+</tr>
+<tr>
+<td style="text-align:left">reset</td>
+<td style="text-align:left">重置端口代理配置状态。</td>
+</tr>
+<tr>
+<td style="text-align:left">set</td>
+<td style="text-align:left">设置配置信息。</td>
+</tr>
+<tr>
+<td style="text-align:left">show</td>
+<td style="text-align:left">显示信息。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用Win-PortFwd管理端口转发"><a href="#使用Win-PortFwd管理端口转发" class="headerlink" title="使用Win-PortFwd管理端口转发"></a>使用Win-PortFwd管理端口转发</h3><p>尽管直接使用<code>PowerShell</code>中的命令不是很复杂, 但仍有人觉得不方便, 这里推荐github上的一个管理脚本<a href="https://github.com/deepzec/Win-PortFwd" target="_blank" rel="noopener">Win-PortFwd</a>, 它提供了比较友好的菜单和向导, 可以更加简单的对转发的端口进行管理</p>
+<h3 id="权限问题"><a href="#权限问题" class="headerlink" title="权限问题"></a>权限问题</h3><p>在添加端口转发的时候有时会出现权限问题, 通常运行下面的命令就可以解决:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set-executionpolicy remotesigned</span><br></pre></td></tr></table></figure></p>
+<h3 id="没有监听端口的问题"><a href="#没有监听端口的问题" class="headerlink" title="没有监听端口的问题"></a>没有监听端口的问题</h3><p>在添加端口后, 也没有报错, 但端口转发就是没有工作, 使用<code>netstat</code>查看监听中的端口, 发现端口根本没有在监听, 这很有可能是因为系统服务列的<code>IP Helper</code>并未启动, 启动该服务即可正常工作。</p>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用powershell中的netsh命令"><span class="toc-number">1.</span> <span class="toc-text">使用powershell中的netsh命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用Win-PortFwd管理端口转发"><span class="toc-number">2.</span> <span class="toc-text">使用Win-PortFwd管理端口转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#权限问题"><span class="toc-number">3.</span> <span class="toc-text">权限问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#没有监听端口的问题"><span class="toc-number">4.</span> <span class="toc-text">没有监听端口的问题</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
