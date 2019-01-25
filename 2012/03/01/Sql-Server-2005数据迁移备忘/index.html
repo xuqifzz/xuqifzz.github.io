@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>Sql Server 2005数据迁移备忘 | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Sql Server 2005数据迁移备忘</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2012/03/01</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tag" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#Sql Server" class="tag">Sql Server</a>
+
+
+            
+          </div>
+          <p>项目中经常需要进行数据迁移, 这里的的迁移主要只指历史日志的迁移。</p>
+<h3 id="查询日志基本情况"><a href="#查询日志基本情况" class="headerlink" title="查询日志基本情况"></a>查询日志基本情况</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">--查询最早最晚的日志</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> [zlt-monitors].[dbo].[AlarmLogs] <span class="keyword">WHERE</span> alarmLogId= (<span class="keyword">SELECT</span> <span class="keyword">min</span>(alarmLogId) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[AlarmLogs])</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> [zlt-monitors].[dbo].[AlarmLogs] <span class="keyword">WHERE</span> alarmLogId= (<span class="keyword">SELECT</span> <span class="keyword">max</span>(alarmLogId) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[AlarmLogs])</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs] <span class="keyword">where</span> <span class="keyword">id</span>=( <span class="keyword">SELECT</span> <span class="keyword">min</span>( <span class="keyword">id</span>) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs])</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs] <span class="keyword">where</span> <span class="keyword">id</span>=( <span class="keyword">SELECT</span> <span class="keyword">max</span>( <span class="keyword">id</span>) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs])</span><br><span class="line"></span><br><span class="line"><span class="comment">--估算日志数量</span></span><br><span class="line"><span class="keyword">select</span> ( <span class="keyword">SELECT</span> <span class="keyword">max</span>( <span class="keyword">id</span>) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs]) - ( <span class="keyword">SELECT</span> <span class="keyword">min</span>( <span class="keyword">id</span>) <span class="keyword">FROM</span> [zlt-monitors].[dbo].[VarLogs])</span><br><span class="line"></span><br><span class="line"><span class="comment">--查看各个表空间占用情况</span></span><br><span class="line">exec sp_MSForEachTable </span><br><span class="line">@precommand=N<span class="string">'create table ##(</span></span><br><span class="line"><span class="string">表名 sysname,</span></span><br><span class="line"><span class="string">记录数 int,</span></span><br><span class="line"><span class="string">保留空间 Nvarchar(10),</span></span><br><span class="line"><span class="string">使用空间 varchar(10),</span></span><br><span class="line"><span class="string">索引使用空间 varchar(10),</span></span><br><span class="line"><span class="string">未用空间 varchar(10))'</span>,</span><br><span class="line">@command1=N<span class="string">'insert ## exec sp_spaceused ''?'''</span>,</span><br><span class="line">@postcommand=N<span class="string">'select * from ## order by 记录数 desc;drop table ## '</span></span><br></pre></td></tr></table></figure>
+<h3 id="日志导出"><a href="#日志导出" class="headerlink" title="日志导出"></a>日志导出</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">--直接导出表</span><br><span class="line">bcp [zlt-monitors].[dbo].[AlarmLogs] out D:\db\alarmlog.txt -c -T</span><br><span class="line"></span><br><span class="line">--按sql导出</span><br><span class="line">bcp &quot;select * from [zlt-monitors].[dbo].[VarLogs] where (recordTime between &apos;2010-01-01 00:00:00&apos; and &apos;2010-02-01 00:00:00&apos;)&quot; queryout  D:\db\varlog.2010-01.txt -c -T</span><br><span class="line"></span><br><span class="line">--修正某些日期</span><br><span class="line">bcp &quot;SELECT [id],[varId],[varName],[varValue], DATEADD(d,36,[recordTime])  as recordTime,[synmark] FROM [zlt-monitors].[dbo].[VarLogs] where ([recordTime] between &apos;2018-01-01&apos; and &apos;2018-01-29&apos;) &quot; queryout  D:\db\varlog.20180206.20180306.txt -c -T</span><br><span class="line"></span><br><span class="line">bcp &quot;SELECT [alarmLogId],[alarmType],[associateId],DATEADD(d,37,[alarmTime]) as alarmTime,[alarmStuts],[alarmValue],[varName],[remark],[alarmLevel],[linkagePolicies] FROM [zlt-monitors].[dbo].[AlarmLogs] where ([alarmTime]  between &apos;2018-01-01 00:00:00&apos; and &apos;2018-01-30 00:00:00&apos;)&quot; queryout  D:\db\alarmlog.20180207.20180307.txt -c -T</span><br></pre></td></tr></table></figure>
+<h3 id="日志导入"><a href="#日志导入" class="headerlink" title="日志导入"></a>日志导入</h3><p>导出的文件是文本格式的, 并且没有列头, 所以字段需要对应好<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bcp [zlt-monitors].[dbo].[VarLogs] in D:\db\varlog.2010-01.txt -c -T</span><br></pre></td></tr></table></figure></p>
+<h3 id="日志清理"><a href="#日志清理" class="headerlink" title="日志清理"></a>日志清理</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">--清除表数据</span></span><br><span class="line"><span class="keyword">truncate</span> <span class="keyword">table</span> Varlogs</span><br></pre></td></tr></table></figure>
+<h3 id="设置外键层叠删除"><a href="#设置外键层叠删除" class="headerlink" title="设置外键层叠删除"></a>设置外键层叠删除</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> AlarmConfirm <span class="keyword">drop</span> <span class="keyword">constraint</span> FK_ALARMCON_ALARMCONF_ALARMLOG</span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> AlarmConfirm <span class="keyword">add</span> <span class="keyword">constraint</span> FK_ALARMCON_ALARMCONF_ALARMLOG <span class="keyword">foreign</span> <span class="keyword">key</span> (alarmLogId) <span class="keyword">references</span> AlarmLogs(alarmLogId) <span class="keyword">on</span> <span class="keyword">delete</span> <span class="keyword">cascade</span></span><br></pre></td></tr></table></figure>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#查询日志基本情况"><span class="toc-number">1.</span> <span class="toc-text">查询日志基本情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志导出"><span class="toc-number">2.</span> <span class="toc-text">日志导出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志导入"><span class="toc-number">3.</span> <span class="toc-text">日志导入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志清理"><span class="toc-number">4.</span> <span class="toc-text">日志清理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置外键层叠删除"><span class="toc-number">5.</span> <span class="toc-text">设置外键层叠删除</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>从零开始实现Netty极简版 (二) ChanelFuture和ChannelPromise | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>从零开始实现Netty极简版 (二) ChanelFuture和ChannelPromise</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/15</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty/">Netty</a>
+  </div>
+
+
+
+            
+            
+          </div>
+          <p>在从零开始实现Netty极简版 (一)中, 我们实现一个基本骨架, 接下来的目标便是实现异步操作。</p>
+<p><a href="https://github.com/xuqifzz/myNetty/tree/section-2/src/main/java/io/xuqi/myNetty" target="_blank" rel="noopener">源码地址</a></p>
+<p>因此服务的启动代码需要做相应升级<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前, bind是同步操作</span></span><br><span class="line">b.bind(<span class="number">6666</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//升级后,bind成为了异步操作,可以添加listener</span></span><br><span class="line">b.bind(<span class="number">6666</span>).addListener((future)-&gt;&#123;</span><br><span class="line">    System.out.println(<span class="string">"绑定端口成功"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h3 id="新的接口"><a href="#新的接口" class="headerlink" title="新的接口"></a>新的接口</h3><p>Netty中实现异步操作主要依靠其的<code>ChannelFuture</code>和<code>ChannelPromise</code>, 以及对应的事件监听器<code>ChannelFutureListener</code>,因此需要定义这三个新的接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelFuture</span> </span>&#123;</span><br><span class="line">    <span class="comment">//返回关联的channel</span></span><br><span class="line">    <span class="function">Channel <span class="title">channel</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">//判断操作是否完成</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isDone</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">//等待操作完成</span></span><br><span class="line">    <span class="function">ChannelFuture <span class="title">await</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException</span>;</span><br><span class="line">    <span class="comment">//添加监听器,监听操作完成</span></span><br><span class="line">    <span class="function">ChannelFuture <span class="title">addListener</span><span class="params">(ChannelFutureListener listener)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelPromise</span> <span class="keyword">extends</span> <span class="title">ChannelFuture</span></span>&#123;</span><br><span class="line">    <span class="comment">//这里只实现一个方法,就是设置操作成功, 因为我们暂时不考虑异常情况!</span></span><br><span class="line">    <span class="function">ChannelPromise <span class="title">setSuccess</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelFutureListener</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">operationComplete</span><span class="params">(ChannelFuture future)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="实现DefaultChannelPromise"><a href="#实现DefaultChannelPromise" class="headerlink" title="实现DefaultChannelPromise"></a>实现<code>DefaultChannelPromise</code></h3><p><code>DefaultChannelPromise</code>实现了<code>ChannelPromise</code>,因为<code>ChannelPromise</code>继承自<code>ChannelFuture</code>,所以它也实现了<code>ChannelFuture</code>,在本文中,<code>ChannelFuture</code>有且仅有<code>DefaultChannelPromise</code>这一个实现。</p>
+<p>下面是主要的代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultChannelPromise</span> <span class="keyword">implements</span> <span class="title">ChannelPromise</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省略部分代码...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//阻塞等待操作完成</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ChannelPromise <span class="title">await</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isDone()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//当操作没有完成时,挂起当前线程</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (!isDone()) &#123;</span><br><span class="line">                wait();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加监听器</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">addListener</span><span class="params">(ChannelFutureListener listener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>)&#123;</span><br><span class="line">            listeners.add(listener);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//检查一下是不是早就完成了</span></span><br><span class="line">        <span class="keyword">if</span> (isDone()) &#123;</span><br><span class="line">            <span class="comment">//通知所有监听器</span></span><br><span class="line">            notifyListeners();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置操作完成</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ChannelPromise <span class="title">setSuccess</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        isSuccess = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>)&#123;</span><br><span class="line">            <span class="comment">//唤醒所有被await挂起的线程</span></span><br><span class="line">            notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//调用所有监听器</span></span><br><span class="line">        notifyListeners();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="同步方法升级为异步方法"><a href="#同步方法升级为异步方法" class="headerlink" title="同步方法升级为异步方法"></a>同步方法升级为异步方法</h3><p>因为现在定义了异步接口, 所以之前实现的同步方法都需要升级, 下面是需要升级的地方</p>
+<ul>
+<li><p>Channel</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bind</span><span class="params">(SocketAddress localAddress)</span></span>;</span><br><span class="line"><span class="comment">//升级后</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop, ChannelPromise promise)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>EventLoopGroup</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(Channel channel)</span></span>;</span><br><span class="line"><span class="comment">//升级后</span></span><br><span class="line"><span class="function">ChannelFuture <span class="title">register</span><span class="params">(Channel channel)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>EventLoop</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前这个接口是空的,升级后如下</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">inEventLoop</span><span class="params">()</span></span>;  <span class="comment">//判断当前是否已经在事件循环的线程中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span></span>; <span class="comment">//提交任务到事件循环线程中运行</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>其中<code>EventLoop</code>做了重大升级, 增加了两个方法, <code>inEventLoop</code>的作用是判断当前线程是否是事件循环的线程,如果不是,就需要再手工调用<code>execute</code>方法,提交任务到事件循环的线程中, Netty就是通过这种方式保证单个channel的所有操作都是在同一线程中进行的。</p>
+<h3 id="升级NioEventLoop"><a href="#升级NioEventLoop" class="headerlink" title="升级NioEventLoop"></a>升级<code>NioEventLoop</code></h3><p>有了异步提交任务的功能后, <code>NioEventLoop</code>的任务越来越重了, 首先需要对register方法进行升级:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Channel channel)</span> </span>&#123;</span><br><span class="line">    channel.register(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//升级后</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">register</span><span class="params">(Channel channel)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> register(<span class="keyword">new</span> DefaultChannelPromise(channel,<span class="keyword">this</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">register</span><span class="params">(<span class="keyword">final</span> ChannelPromise promise)</span></span>&#123;</span><br><span class="line">    promise.channel().register(<span class="keyword">this</span>,promise);</span><br><span class="line">    <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>出了register方法签名的改动外, <code>NioEventLoop</code>还增加了线程池的功能,能够对其提交任务。</p>
+<p>因此在它的事件循环中,不仅需要调用<code>selector.select()</code>,还需要忙里偷闲来完成异步提交的任务,所以需要在它的死循环中加入<code>runAllTasks()</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//死循环内部代码</span></span><br><span class="line"><span class="comment">//升级前</span></span><br><span class="line"><span class="keyword">int</span> readyChannels = selector.select(<span class="number">512</span>);</span><br><span class="line">processSelectedKeysPlain(selector.selectedKeys());</span><br><span class="line">Thread.yield();</span><br><span class="line"></span><br><span class="line"><span class="comment">//升级后</span></span><br><span class="line"><span class="keyword">int</span> readyChannels = selector.select(<span class="number">512</span>);</span><br><span class="line">processSelectedKeysPlain(selector.selectedKeys());</span><br><span class="line">runAllTasks(); <span class="comment">//执行异步提交的任务</span></span><br><span class="line">Thread.yield();</span><br></pre></td></tr></table></figure>
+<p>被提交的任务被暂存在一个队列中<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">private</span> Queue&lt;Runnable&gt; taskQueue = <span class="keyword">new</span> LinkedBlockingQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable task)</span> </span>&#123;</span><br><span class="line">    taskQueue.offer(task);</span><br><span class="line">    selector.wakeup(); <span class="comment">//唤醒selector, 以免它因无事可做而一直阻塞</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">runAllTasks</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Runnable task = taskQueue.poll();</span><br><span class="line">        <span class="keyword">if</span>(task == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        safeExecute(task);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">safeExecute</span><span class="params">(Runnable task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        task.run();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="升级AbstractNioChannel"><a href="#升级AbstractNioChannel" class="headerlink" title="升级AbstractNioChannel"></a>升级<code>AbstractNioChannel</code></h3><p>AbstractNioChannel的升级主要是在更新register方法为异步方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.eventLoop = (NioEventLoop)eventLoop;</span><br><span class="line">    <span class="comment">//确保注册操作是在关联的EventLoop中完成</span></span><br><span class="line">    <span class="keyword">if</span>(eventLoop.inEventLoop())&#123;</span><br><span class="line">        register0(promise);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        eventLoop.execute(()-&gt; register0(promise));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">register0</span><span class="params">(ChannelPromise promise)</span></span>&#123;</span><br><span class="line">    doRegister();</span><br><span class="line">    <span class="comment">//操作都完成了,设置promise状态为完成</span></span><br><span class="line">    promise.setSuccess();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="升级ServerBootstrap"><a href="#升级ServerBootstrap" class="headerlink" title="升级ServerBootstrap"></a>升级<code>ServerBootstrap</code></h3><p>最后是升级<code>ServerBootstrap</code>,也就是它的<code>bind</code>方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> port)</span></span>&#123;</span><br><span class="line">    Channel channel = initAndRegister();</span><br><span class="line">    channel.bind(<span class="keyword">new</span> InetSocketAddress(port));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//升级后</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">bind</span><span class="params">(<span class="keyword">int</span> port)</span></span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ChannelFuture regFuture = initAndRegister();</span><br><span class="line">    <span class="keyword">final</span> Channel channel = regFuture.channel();</span><br><span class="line">    <span class="keyword">final</span> ChannelPromise promise = <span class="keyword">new</span> DefaultChannelPromise(channel,channel.eventLoop());</span><br><span class="line">    regFuture.addListener((future) -&gt; &#123;</span><br><span class="line">        channel.bind(<span class="keyword">new</span> InetSocketAddress(port),promise);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> promise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="阶段二总结"><a href="#阶段二总结" class="headerlink" title="阶段二总结"></a>阶段二总结</h3><p>还有几处很小的修改本文没有提到, 详情可以查看完整的源代码, 到此为止, 异步机制就已经加入了我们的极简版Netty实现了。</p>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#新的接口"><span class="toc-number">1.</span> <span class="toc-text">新的接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现DefaultChannelPromise"><span class="toc-number">2.</span> <span class="toc-text">实现DefaultChannelPromise</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步方法升级为异步方法"><span class="toc-number">3.</span> <span class="toc-text">同步方法升级为异步方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#升级NioEventLoop"><span class="toc-number">4.</span> <span class="toc-text">升级NioEventLoop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#升级AbstractNioChannel"><span class="toc-number">5.</span> <span class="toc-text">升级AbstractNioChannel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#升级ServerBootstrap"><span class="toc-number">6.</span> <span class="toc-text">升级ServerBootstrap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#阶段二总结"><span class="toc-number">7.</span> <span class="toc-text">阶段二总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

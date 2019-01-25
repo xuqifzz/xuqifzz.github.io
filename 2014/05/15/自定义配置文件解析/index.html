@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>自定义配置文件解析 | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>自定义配置文件解析</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2014/05/15</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/工具开发/">工具开发</a>
+  </div>
+
+
+
+            
+            
+              | 
+                  <i class="fa fa-tags" aria-hidden="true"></i>
+                
+               
+  <a href="/tags/#语言特性" class="tag">语言特性</a>
+
+  <a href="/tags/#C#" class="tag">C#</a>
+
+
+            
+          </div>
+          <p>在制作小工具, 绿色软件时, 经常需要定义一些小型配置文件, 这些配置文件格式一般是针对具体业务的,是对业务的精准定义, 因此格式需要清爽简单。</p>
+<h3 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h3><p>这里以一个端口转发的小工具的配置文件为例:</p>
+<ul>
+<li>支持若干组端口转发配置同时工作</li>
+<li>每组端口转发配置需要配置一个监听端口, 以及一组转发目标地址</li>
+<li>每组转发目标地址包括一个ip和一个端口</li>
+</ul>
+<p>用json描述如下<br><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27011</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27012</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27013</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>以上配置文件的意思是:<br>监听27011端口, 并将接收到的数据转发到192.168.30.1:27011上, 若该端口无法连接, 则发送到192.168.30.2:27011上.<br>接着的27012和27013端口也是同理。</p>
+<p>直接使用json当配置文件当然是可以的, 而且有现成的类库解析,不过在这个场景下, 我更加倾向于使用自定义的格式, 这样看起来更加清爽, 比如以下格式:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">27011|192.168.30.1:27011|192.168.30.2:27011</span><br><span class="line">27012|192.168.30.1:27012|192.168.30.2:27012</span><br><span class="line">27013|192.168.30.1:27013|192.168.30.2:27013</span><br></pre></td></tr></table></figure></p>
+<p>我们需要把这段文本解析为<code>List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;</code>,<br>下面就描述如何自己编写代码来解析这段文本</p>
+<h3 id="硬编码解析"><a href="#硬编码解析" class="headerlink" title="硬编码解析"></a>硬编码解析</h3><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);       <span class="comment">//从配置文件中读取所有行</span></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">string</span>[] fields = line.Split(<span class="string">'|'</span>);  <span class="comment">//按|进行切割</span></span><br><span class="line">        <span class="keyword">if</span> (fields.Length &lt; <span class="number">2</span>) <span class="keyword">continue</span>;    <span class="comment">//过滤空行</span></span><br><span class="line">        IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(fields[<span class="number">0</span>]));  <span class="comment">//提取监听端口</span></span><br><span class="line">        List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; fields.Length; i++)     <span class="comment">//提取转发列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> index = fields[i].IndexOf(<span class="string">":"</span>);</span><br><span class="line">            <span class="keyword">if</span> (index != <span class="number">-1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(fields[i].Substring(<span class="number">0</span>, index)), <span class="keyword">int</span>.Parse(fields[i].Substring(index+<span class="number">1</span>))));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (forwordingList.Count &gt; <span class="number">0</span>)   <span class="comment">//过滤掉空列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码的思路是从配置文件读出所有行, 然后对每行以分隔符<code>|</code>进行切割,切割出各个字段后, 再一一分析, 填充进目标数据结构。</p>
+<p>可以看到, 硬编码解析的话,代码比较冗长, 而且语义不清, 如果这段代码不是自己亲手写的, 甚至还难以看懂。</p>
+<h3 id="正则表达式解析"><a href="#正则表达式解析" class="headerlink" title="正则表达式解析"></a>正则表达式解析</h3><p>在解析思路不变的情况下, 我们可以用正则表达式改造以上代码:</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (r.IsMatch(line))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> match = r.Match(line);</span><br><span class="line">            IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(match.Groups[<span class="number">1</span>].Value));</span><br><span class="line">            List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">            <span class="keyword">foreach</span> (Match match2 <span class="keyword">in</span> r2.Matches(match.Groups[<span class="number">2</span>].Value))</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(match2.Groups[<span class="number">1</span>].Value), <span class="keyword">int</span>.Parse(match2.Groups[<span class="number">2</span>].Value)));</span><br><span class="line">            &#125;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们的示例比较简单, 使用正则表达式并未减少代码行数, 只不过使用正则表达式扩展性更强了</p>
+<h3 id="使用lambda表达式"><a href="#使用lambda表达式" class="headerlink" title="使用lambda表达式"></a>使用lambda表达式</h3><p>为了压缩代码行数,以及更加清晰的语义表达, 我们还可以使用大杀器lambda表达式, 经过压缩后代码如下:</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig2()</span><br><span class="line">&#123;</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> File.ReadAllLines(<span class="string">"forward.txt"</span>).ToList()</span><br><span class="line">        .Where( i =&gt; r.IsMatch(i))</span><br><span class="line">        .Select( i=&gt; r.Match(i))</span><br><span class="line">        .Select( i=&gt; <span class="keyword">new</span>  Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(</span><br><span class="line">            <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(i.Groups[<span class="number">1</span>].Value)),</span><br><span class="line">            (<span class="keyword">from</span> Match j <span class="keyword">in</span> r2.Matches(i.Groups[<span class="number">2</span>].Value) <span class="function"><span class="keyword">select</span> new <span class="title">IPEndPoint</span>(<span class="params">IPAddress.Parse(j.Groups[<span class="number">1</span>].Value</span>), <span class="keyword">int</span>.<span class="title">Parse</span>(<span class="params">j.Groups[<span class="number">2</span>].Value</span>))).<span class="title">ToList</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">            )           </span></span><br><span class="line"><span class="function">        ).<span class="title">ToList</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到代码行数下降了很多, 而且这种方式的表达更加清晰。<a href="https://github.com/xuqifzz/TcpForwording/blob/master/Program.cs" target="_blank" rel="noopener">完整代码</a></p>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#需求描述"><span class="toc-number">1.</span> <span class="toc-text">需求描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬编码解析"><span class="toc-number">2.</span> <span class="toc-text">硬编码解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正则表达式解析"><span class="toc-number">3.</span> <span class="toc-text">正则表达式解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用lambda表达式"><span class="toc-number">4.</span> <span class="toc-text">使用lambda表达式</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

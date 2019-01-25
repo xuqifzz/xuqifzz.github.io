@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="专注于应用程序框架开发">
+  <meta name="keywords" content="">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>从零开始实现Netty极简版 (三) 实现ChannelPipeline | 徐琦的博客</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>徐琦的博客</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>从零开始实现Netty极简版 (三) 实现ChannelPipeline</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/16</time>
+            
+              | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Netty/">Netty</a>
+  </div>
+
+
+
+            
+            
+          </div>
+          <p>在从零开始实现Netty极简版 (二)中, 我们已经实现了异步接口, 接下来的目标便是实现<code>ChannelPipeline</code>,也就是Netty中的责任链。</p>
+<p><code>ChannelPipeline</code>是Netty非常重要的特性, 因为要学习使用Netty, 那就必须要了解<code>ChannelPipeline</code>, 在Netty中, 网络通讯几乎所有的关键操作都跟ChannelPipeline有关系, 包括<code>bind</code>, <code>accept</code>, <code>read</code>, <code>write</code>等等。</p>
+<p>由于之前没有实现<code>ChannelPipeline</code>,所以这些相关操作都不是在<code>ChannelPipeline</code>中完成的, 而在本文中, 这些操作都将被被移入它们应该在的位置。<br><a href="https://github.com/xuqifzz/myNetty/tree/section-3/src/main/java/io/xuqi/myNetty" target="_blank" rel="noopener">源码地址</a></p>
+<h3 id="启动代码"><a href="#启动代码" class="headerlink" title="启动代码"></a>启动代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ChannelInboundHandler handler = (ctx,msg) -&gt; &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes = (<span class="keyword">byte</span>[])msg;</span><br><span class="line">    String str = <span class="keyword">new</span> String(bytes);</span><br><span class="line">    System.out.println(<span class="string">"接收到消息:"</span> + str);</span><br><span class="line">    ByteBuffer buffer = ByteBuffer.wrap(bytes);</span><br><span class="line">    ctx.write(buffer).addListener((future) -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">"回复成功"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(handler);</span><br><span class="line"><span class="comment">//这里改成异步调用</span></span><br><span class="line">b.bind(<span class="number">6666</span>).addListener((future)-&gt;&#123;</span><br><span class="line">    System.out.println(<span class="string">"绑定端口成功"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>可以看到, 这次不仅支持了数据读取, 还支持了数据写入, 数据写入也是异步操作, 操作完成后将输出”回复成功”。</p>
+<h3 id="新的接口"><a href="#新的接口" class="headerlink" title="新的接口"></a>新的接口</h3><p>Netty定义为Pipeline定义了大量相关的概念, 具体体现为许多个接口, 这里每个接口里都定义了大量的方法, 这些接口定义的方法看上去很类似, 但在概念上是有区别的。</p>
+<p>由于方法太多会分散注意力, 因此本文只定义了会用到的少许几个方法, 这样看起来会清爽很多。</p>
+<p>下面是接口定义:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//没有定义任何方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelHandler</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelInboundInvoker</span> </span>&#123;</span><br><span class="line">    <span class="function">ChannelInboundInvoker <span class="title">fireChannelRead</span><span class="params">(Object msg)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelOutboundInvoker</span> </span>&#123;</span><br><span class="line">    <span class="function">ChannelFuture <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span></span>;</span><br><span class="line">    <span class="function">ChannelFuture <span class="title">write</span><span class="params">(Object msg)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelInboundHandler</span>  <span class="keyword">extends</span> <span class="title">ChannelHandler</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelOutboundHandler</span>  <span class="keyword">extends</span> <span class="title">ChannelHandler</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">bind</span><span class="params">(ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">write</span><span class="params">(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelHandlerContext</span> <span class="keyword">extends</span>  <span class="title">ChannelInboundInvoker</span>, <span class="title">ChannelOutboundInvoker</span></span>&#123;</span><br><span class="line">    <span class="function">ChannelHandler <span class="title">handler</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ChannelPipeline</span> <span class="keyword">extends</span> <span class="title">ChannelInboundInvoker</span>,<span class="title">ChannelOutboundInvoker</span> </span>&#123;</span><br><span class="line">    <span class="function">Channel <span class="title">channel</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">ChannelPipeline <span class="title">addLast</span><span class="params">(ChannelHandler handlers)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在xxxInvoker 和 xxxHandler中有名称相似的方法, 比如<code>ChannelOutboundHandler</code>和<code>ChannelOutboundInvoker</code>都有<code>write</code>方法, 实际上除了<code>write</code>方法,它们还有很多类似的方法, 只是我这个实现里没有。那他们的概念有什么区别, 请继续看下去吧。</p>
+<h3 id="责任传递的实现AbstractChannelHandlerContext"><a href="#责任传递的实现AbstractChannelHandlerContext" class="headerlink" title="责任传递的实现AbstractChannelHandlerContext"></a>责任传递的实现<code>AbstractChannelHandlerContext</code></h3><p>Netty中责任链的实现是在<code>AbstractChannelHandlerContext</code>中实现的,他包装了<code>ChannelHandler</code>, 在Netty中是<code>ChannelHandlerContext</code>所有实现类的基类, <code>ChannelHandlerContext</code>就是依赖它来让消息在责任链中传递的。</p>
+<p>在<code>AbstractChannelHandlerContext</code>中要处理很多类型的消息传递, 这些方法实现都大同小异, 对于一个xxx操作, 会定义xxx方法以及invokeXxx方法</p>
+<ul>
+<li><p>xxx方法负责确定该操作是出站还是入站操作, 找到下一个对应的<code>AbstractChannelHandlerContext</code>, 然后在它对应的的<code>EventLoop</code>中调用invokeXxx</p>
+</li>
+<li><p>invokeXxx方法负责调用自己包装的handler的相应方法</p>
+</li>
+</ul>
+<p>下面是write方法的例子,其他方法请参阅源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">write</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">        AbstractChannelHandlerContext next = findContextOutbound();</span><br><span class="line">        ChannelPromise promise = <span class="keyword">new</span> DefaultChannelPromise(pipeline.channel(),eventLoop());</span><br><span class="line">        EventLoop eventLoop = next.eventLoop();</span><br><span class="line">        <span class="keyword">if</span> (eventLoop.inEventLoop()) &#123;</span><br><span class="line">            next.invokeWrite(msg, promise);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            safeExecute(eventLoop,()-&gt; &#123;next.invokeWrite(msg, promise);&#125;,promise,msg);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> promise;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">invokeWrite</span><span class="params">(Object msg, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ((ChannelOutboundHandler) handler()).write(<span class="keyword">this</span>, msg, promise);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        t.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>findContextOutbound</code>方法和<code>findContextInbound</code>方法展示了Netty中的责任链是如何把<code>AbstractChannelHandlerContext</code>串联起来的:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> AbstractChannelHandlerContext <span class="title">findContextOutbound</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    AbstractChannelHandlerContext ctx = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        ctx = ctx.prev;</span><br><span class="line">    &#125; <span class="keyword">while</span> (!ctx.outbound);</span><br><span class="line">    <span class="keyword">return</span> ctx;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> AbstractChannelHandlerContext <span class="title">findContextInbound</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    AbstractChannelHandlerContext ctx = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        ctx = ctx.next;</span><br><span class="line">    &#125; <span class="keyword">while</span> (!ctx.inbound);</span><br><span class="line">    <span class="keyword">return</span> ctx;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="责任链的初始化"><a href="#责任链的初始化" class="headerlink" title="责任链的初始化"></a>责任链的初始化</h3><p>责任链的是随Channel一起初始化的, 并且会和对应的Channel不离不弃, 相守一生。</p>
+<p>在本文的实现中, <code>ChannelPipeline</code>只有一个惟一的实现类, 那就是<code>DefaultChannelPipeline</code>。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DefaultChannelPipeline</span><span class="params">(Channel channel)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.channel = channel;</span><br><span class="line">    tail = <span class="keyword">new</span> TailContext(<span class="keyword">this</span>);</span><br><span class="line">    head = <span class="keyword">new</span> HeadContext(<span class="keyword">this</span>);</span><br><span class="line">    head.next = tail;</span><br><span class="line">    tail.prev = head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以从构造函数中看到, <code>DefaultChannelPipeline</code>关联了对应的<code>Channel</code>,并初始化了<code>TailContext</code>和<code>HeadContext</code>两个<code>AbstractChannelHandlerContext</code>,并且将他们连接了起来。</p>
+<p><code>TailContext</code>在我们的实现中暂时并没什么用, 而<code>HeadContext</code>却比较重要, 它是Netty责任链的最外侧, 它是所有入站消息的第一站, 也是所有出站消息的最后一站, 因此它有兜底的义务。</p>
+<p>下面是它的的部分代码<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    channel.unsafe().bind(localAddress,promise);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    channel.unsafe().write(msg,promise);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在上面的代码里, 你终于见到了unsafe, 其实我原计划是不想定义unsafe的, 想把它的功能全部定义到channel中去, 但我现在发现这是行不通的, 下面会解释。</p>
+<h3 id="在Channel中定义Unsafe"><a href="#在Channel中定义Unsafe" class="headerlink" title="在Channel中定义Unsafe"></a>在Channel中定义Unsafe</h3><p>首先看全新的Channel定义</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Channel</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(EventLoop eventLoop, ChannelPromise promise)</span></span>;</span><br><span class="line">    <span class="function">ChannelFuture <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span></span>;</span><br><span class="line">    <span class="function">EventLoop <span class="title">eventLoop</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">ChannelPipeline <span class="title">pipeline</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">Unsafe <span class="title">unsafe</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Unsafe</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">write</span><span class="params">(Object msg, ChannelPromise promise)</span></span>; </span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>Unsafe</code>和<code>Channel</code>都定义了相同签名的<code>bind</code>方法, 而这两个<code>bind</code>方法的概念是不同的:</p>
+<ul>
+<li><p><code>Channel</code>中的<code>bind</code>方法是一个操作请求, 这个请求会被投递到<code>Channel</code>对应的<code>ChannelPiple</code>中。</p>
+</li>
+<li><p><code>Unsafe</code>中的<code>bind</code>方法是一个直接操作, 它直接调用了doBind,而后者调用java的Nio相关操作</p>
+</li>
+<li><p>除了<code>bind</code>外, 还有一些其他操作也是这个情况, 因此Netty设计者才区分了Channel和Unsafe</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//AbstractNioChannel中的bind实现</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ChannelFuture <span class="title">bind</span><span class="params">(SocketAddress localAddress,ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> pipeline.bind(localAddress,promise);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NioUnsafe中的bind实现</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(SocketAddress localAddress, ChannelPromise promise)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 其他操作省略 ...</span></span><br><span class="line">    doBind(localAddress); <span class="comment">//直接调用doBind</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NioServerSocketChannel中的doBind</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doBind</span><span class="params">(SocketAddress localAddress)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    javaChannel().bind(localAddress);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="阶段三总结"><a href="#阶段三总结" class="headerlink" title="阶段三总结"></a>阶段三总结</h3><p>到此位置, ChannelPipeline就已经加入到了我们的Netty实现中, 同样的, 还有一些不太重要的细节本文中没有提到, 可以自行查看源代码。</p>
+
+        </section>
+    </article>
+    
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#启动代码"><span class="toc-number">1.</span> <span class="toc-text">启动代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#新的接口"><span class="toc-number">2.</span> <span class="toc-text">新的接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#责任传递的实现AbstractChannelHandlerContext"><span class="toc-number">3.</span> <span class="toc-text">责任传递的实现AbstractChannelHandlerContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#责任链的初始化"><span class="toc-number">4.</span> <span class="toc-text">责任链的初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在Channel中定义Unsafe"><span class="toc-number">5.</span> <span class="toc-text">在Channel中定义Unsafe</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#阶段三总结"><span class="toc-number">6.</span> <span class="toc-text">阶段三总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

@@ -78,7 +78,7 @@
 
             
           </div>
-          <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
+          <p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
 <h3 id="启动器类"><a href="#启动器类" class="headerlink" title="启动器类"></a>启动器类</h3><p>Netty只提供了<code>Bootstrap</code>以及<code>ServerBootstrap</code>两个启动器类, 其基类是一个泛型类, 定义如下</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBootstrap</span>&lt;</span></span><br><span class="line"><span class="class">        <span class="title">B</span> <span class="keyword">extends</span> <span class="title">AbstractBootstrap</span>&lt;<span class="title">B</span>, <span class="title">C</span>&gt;, </span></span><br><span class="line"><span class="class">        <span class="title">C</span> <span class="keyword">extends</span> <span class="title">Channel</span></span></span><br><span class="line"><span class="class">        &gt;  <span class="keyword">implements</span> <span class="title">Cloneable</span></span></span><br></pre></td></tr></table></figure>
 <p>乍一看去去这个类的泛型参数定义挺复杂的, 实际上这个类只有一个泛型参数, 那就是<code>C extends Channel</code>, 这个参数表示接收一个Channel的子类作为类型参数.</p>
@@ -107,7 +107,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动器类"><span class="toc-number">2.</span> <span class="toc-text">启动器类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作类"><span class="toc-number">3.</span> <span class="toc-text">异步操作类</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#启动器类"><span class="toc-number">1.</span> <span class="toc-text">启动器类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步操作类"><span class="toc-number">2.</span> <span class="toc-text">异步操作类</span></a></li></ol>
         </div>
     </div>
     
