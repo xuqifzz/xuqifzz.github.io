@@ -1,500 +1,2500 @@
 <!DOCTYPE html>
-<html lang=>
-  <head><meta name="generator" content="Hexo 3.8.0">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
   <meta name="description" content="专注于应用程序框架开发">
-  <meta name="keywords" content="">
-  
-    <link rel="icon" href="/favicon.ico">
-  
-    
+<meta property="og:type" content="website">
+<meta property="og:title" content="徐琦的博客">
+<meta property="og:url" content="http://xuqifzz.github.io/index.html">
+<meta property="og:site_name" content="徐琦的博客">
+<meta property="og:description" content="专注于应用程序框架开发">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="徐琦的博客">
+<meta name="twitter:description" content="专注于应用程序框架开发">
+
+
+
+
+
+
+  <link rel="canonical" href="http://xuqifzz.github.io/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
   <title>徐琦的博客</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body>
-  <header>
-  <div class="header-container">
-    <a class="logo" href="/">
-      <span>徐琦的博客</span>
-    </a>
-    <ul class="right-header">
-      
-        <li class="nav-item">
-          
-            <a href="/" class="item-link active">首页</a>
-          
-        </li>
-      
-        <li class="nav-item">
-          
-            <a href="/about" class="item-link">关于</a>
-          
-        </li>
-      
-        <li class="nav-item">
-          
-            <a href="/archives" class="item-link">归档</a>
-          
-        </li>
-      
-        <li class="nav-item">
-          
-            <a href="/tags" class="item-link">标签</a>
-          
-        </li>
-      
-    </ul>
-  </div>
-</header>
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
 
-  <main id="index">
-  <div class="posts-list">
+  
+  
     
-      <section>
-        <a href="/2019/01/23/使用字面值初始化Map/">
-          <h3 class="post-head">
-            使用字面值初始化Map
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>在Java中使用字面值初始化一个Map很困难, 正如Java的一贯作风, 代码比较恶心, 比如<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">myMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">myMap.put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">myMap.put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">myMap.put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/23</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Java/">Java</a>
-  </div>
+  
 
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
 
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tag" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#语言特性" class="tag">语言特性</a>
-
-
-          
-        </div>
-      </section>
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
     
-      <section>
-        <a href="/2019/01/16/从零开始实现Netty极简版-三-实现ChannelPipeline/">
-          <h3 class="post-head">
-            从零开始实现Netty极简版 (三) 实现ChannelPipeline
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>在从零开始实现Netty极简版 (二)中, 我们已经实现了异步接口, 接下来的目标便是实现<code>ChannelPipeline</code>,也就是Netty中的责任链。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/16</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty/">Netty</a>
-  </div>
 
-
-
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/01/15/从零开始实现Netty极简版-二-ChanelFuture和ChannelPromise/">
-          <h3 class="post-head">
-            从零开始实现Netty极简版 (二) ChanelFuture和ChannelPromise
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>在从零开始实现Netty极简版 (一)中, 我们实现一个基本骨架, 接下来的目标便是实现异步操作。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/15</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty/">Netty</a>
-  </div>
-
-
-
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/01/14/从零开始实现Netty极简版-一-基本骨架/">
-          <h3 class="post-head">
-            从零开始实现Netty极简版 (一) 基本骨架
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>第一步的任务是实现一个基本骨架, 让程序能够跑起来。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/14</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty/">Netty</a>
-  </div>
-
-
-
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/01/13/Netty中的泛型/">
-          <h3 class="post-head">
-            Netty中的泛型
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/13</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Netty/">Netty</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tag" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#泛型" class="tag">泛型</a>
-
-
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/01/13/整理Blog内容到GitHub-Pages/">
-          <h3 class="post-head">
-            整理Blog内容到GitHub Pages
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>因为GitHub Pages已经是程序员博客的大势所趋，再加上以前写的东西比较混乱，决定痛下决心进行整理，希望能有个好的开始。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/13</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/其他/">其他</a>
-  </div>
-
-
-
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2018/12/12/Windows下的端口转发/">
-          <h3 class="post-head">
-            Windows下的端口转发
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <h3 id="使用powershell中的netsh命令"><a href="#使用powershell中的netsh命令" class="headerlink" title="使用powershell中的netsh命令"></a>使用powershell中的netsh命令</h3><p>端口转发是网络运维中常用到的功能, <code>Windows</code>已经自带了端口转发功能, 可以通过在<code>PowerShell</code>中调用<code>netsh interface portproxy</code>实现, 一般格式如下:</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2018/12/12</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络运维/">网络运维</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tags" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#Windows" class="tag">Windows</a>
-
-  <a href="/tags/#网络运维" class="tag">网络运维</a>
-
-
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2015/12/14/搬瓦工主机修改SWAP分区大小/">
-          <h3 class="post-head">
-            搬瓦工主机修改SWAP分区大小
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>搬瓦工主机的默认虚拟内存空间总是很小, 所以需要为其配置更大的虚拟内存</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2015/12/14</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/VPS/">VPS</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tags" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#linux" class="tag">linux</a>
-
-  <a href="/tags/#系统优化" class="tag">系统优化</a>
-
-
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2014/05/15/自定义配置文件解析/">
-          <h3 class="post-head">
-            自定义配置文件解析
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>在制作小工具, 绿色软件时, 经常需要定义一些小型配置文件, 这些配置文件格式一般是针对具体业务的,是对业务的精准定义, 因此格式需要清爽简单。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2014/05/15</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/工具开发/">工具开发</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tags" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#语言特性" class="tag">语言特性</a>
-
-  <a href="/tags/#C#" class="tag">C#</a>
-
-
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2014/05/11/高可用的端口转发/">
-          <h3 class="post-head">
-            高可用的端口转发
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>在windows下, 利用<code>netsh</code>可以实现端口转发功能, 能满足大部分日常需求, 但在某些情况下, 在后端节点不可用的时候, 需要将数据转发至另一节点, 这时就只能自行编码实现了。</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2014/05/11</time>
-          
-            | <i class="fa fa-folder-open-o" aria-hidden="true"></i> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/网络运维/">网络运维</a>
-  </div>
-
-
-
-          
-          
-            <span class="seperator">|</span>
-             
-                <i class="fa fa-tags" aria-hidden="true"></i>
-              
-             
-  <a href="/tags/#网络运维" class="tag">网络运维</a>
-
-  <a href="/tags/#C#" class="tag">C#</a>
-
-
-          
-        </div>
-      </section>
-    
-  </div>
-  <aside>
-    
-    <div class="search">
-      <div class="content">
-        <form action="//www.google.com/search" target="_blank" class="search-form">
-          <input type="text" name="q" maxlength="20" placeholder="Search">
-          <input type="hidden" name="sitesearch" value="http://yoursite.com">
-        </form>
-      </div>
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">徐琦的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
     </div>
     
     
-      <div class="avatar">
-        <img src="/images/8927407.jpg" alt="avatar">
-          
-            <div class="content">
-                <span>专注于应用程序框架开发</span>
-            </div>
-          
-      </div>
-    
-    
-      <div class="categories">
-        <h1>
-          Categories
-        </h1>
-        <div class="content">
-          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VPS/">VPS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具开发/">工具开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络运维/">网络运维</a></li></ul>
-        </div>
-      </div>
-    
-    
-      <div class="links">
-        <h1>
-          Blogroll
-        </h1>
-        <div class="content">
-          
-            <a href="https://www.baidu.com/" target="_blank">百度</a>
-          
-            <a href="https://www.google.com/" target="_blank">谷歌</a>
-          
-            <a href="https://www.zhihu.com/" target="_blank">知乎</a>
-          
-        </div>
-      </div>
-    
-  </aside>
-</main>
+  </div>
 
-  <div class="paging">
-  <div class="paging-container">
-    
-    <div></div>    
-    
-    
-    <div class="page-next">
-      <a href="/page/2/">Next</a>
-    </div>
-    
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
   </div>
 </div>
 
 
 
-  <footer>
-  <div class="copyright">
-    <div>
-      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home menu-item-active">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/23/使用字面值初始化Map/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/23/使用字面值初始化Map/" class="post-title-link" itemprop="url">使用字面值初始化Map</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-23 17:24:38" itemprop="dateCreated datePublished" datetime="2019-01-23T17:24:38+08:00">2019-01-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 19:36:50" itemprop="dateModified" datetime="2019-01-25T19:36:50+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Java中使用字面值初始化一个Map很困难, 正如Java的一贯作风, 代码比较恶心, 比如<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">myMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">myMap.put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">myMap.put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">myMap.put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这令强迫症实在难以忍受, 所以我决定研究一下看看有什么”优雅”的解决方案</p>
+<h3 id="其他语言的做法"><a href="#其他语言的做法" class="headerlink" title="其他语言的做法"></a>其他语言的做法</h3><ul>
+<li><p>Javascript</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap=&#123;<span class="attr">id</span>:<span class="number">5</span>, <span class="attr">name</span>: <span class="string">"xuqi"</span>, <span class="attr">age</span>: <span class="number">18</span>&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Python</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">myMap = &#123;<span class="string">'id'</span>: <span class="number">5</span>, name: <span class="string">'xuqi'</span>, <span class="string">'age'</span>: <span class="number">18</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C#</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, Object&gt; &#123;&#123;<span class="string">"id"</span>, <span class="number">5</span>&#125;, &#123;<span class="string">"name"</span>, <span class="string">"xuqi"</span>&#125;, &#123;<span class="string">"age"</span>, <span class="number">18</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C++ (就连C++ 都…)</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; int_to_string = &#123;&#123;<span class="number">1</span>, <span class="string">"java"</span>&#125;, &#123;<span class="number">2</span>, <span class="string">"is"</span>&#125;, &#123;<span class="number">3</span>, <span class="string">"pretty"</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Java中的一些解决办法"><a href="#Java中的一些解决办法" class="headerlink" title="Java中的一些解决办法"></a>Java中的一些解决办法</h3><h4 id="双括号初始化法"><a href="#双括号初始化法" class="headerlink" title="双括号初始化法"></a>双括号初始化法</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这个方法多了一些多余的put很令人不爽</span></span><br><span class="line">Map&lt;String , Object&gt; map = <span class="keyword">new</span> HashMap&lt;String , Object&gt;()&#123;&#123;</span><br><span class="line">    put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">    put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">    put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="二维数组封装法"><a href="#二维数组封装法" class="headerlink" title="二维数组封装法"></a>二维数组封装法</h4><p>定义如下函数:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,String&gt; <span class="title">createStringMap</span><span class="params">(String[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; data[<span class="number">0</span>], data -&gt; data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,Integer&gt; <span class="title">createIntegerMap</span><span class="params">(Object[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; (String) data[<span class="number">0</span>], data -&gt; (Integer) data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>则可以用如下方式创建Map<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建值为String的Map</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = </span><br><span class="line">    createStringMap(<span class="keyword">new</span> String[][] &#123;&#123; <span class="string">"key1"</span>, <span class="string">"value1"</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="string">"value2"</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="string">"value3"</span> &#125;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建值为Integer的Map</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = </span><br><span class="line">    createIntegerMap(<span class="keyword">new</span> Object[][] &#123;&#123; <span class="string">"key1"</span>, <span class="number">1</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="number">2</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="number">3</span> &#125;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>遗憾的是, 因为Java<em>强大的类型擦除特性</em>, 通过这个思路暂时无法写出下面的方法, 除非再加个恶心的<code>Class&lt;T&gt;</code>参数<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//该方法因为类型擦除无法实现</span></span><br><span class="line"><span class="keyword">static</span>  &lt;T&gt; <span class="function">Map&lt;String,T&gt; <span class="title">createMap</span><span class="params">(Object[][] entries)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>另外这个方式也没有编译时检查功能, 不太安全。</p>
+<h4 id="参数列表封装法"><a href="#参数列表封装法" class="headerlink" title="参数列表封装法"></a>参数列表封装法</h4><p>有很多类库都是这个办法,比如Java 9的<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; unmodifiableMap = Map.of(<span class="string">"key1"</span>, <span class="string">"value1"</span>, <span class="string">"key2"</span>, <span class="string">"value2"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>自己实现的话,大概可以这样<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;A&gt; <span class="function">Map&lt;String, A&gt; <span class="title">asMap</span><span class="params">(Object... keysAndValues)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LinkedHashMap&lt;String, A&gt;() &#123;&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; keysAndValues.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            put(keysAndValues[i].toString(), (A) keysAndValues[++i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以这样调用<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; one = asMap(<span class="string">"1stKey"</span>, <span class="string">"1stVal"</span>, <span class="string">"2ndKey"</span>, <span class="string">"2ndVal"</span>);</span><br><span class="line">Map&lt;String, Object&gt; two = asMap(<span class="string">"1stKey"</span>, Boolean.TRUE, <span class="string">"2ndKey"</span>, <span class="keyword">new</span> Integer(<span class="number">2</span>));</span><br></pre></td></tr></table></figure></p>
+<p>上面的asMap没有编译期类型安全检查, 而Java9的版本似乎是安全的,但好像参数数量有限制,而且限制的数量还很少(这点我没去确认)</p>
+<p>另外这个方式语义也不太好, Map应该是一对对的,不是吗?</p>
+<h4 id="目前最优雅的办法-lambda"><a href="#目前最优雅的办法-lambda" class="headerlink" title="目前最优雅的办法-lambda"></a>目前最优雅的办法-lambda</h4><p>查了N多资料后,我终于找到了一个优雅的办法, 那就是使用lambda表达式, 客户代码很简单, 而且类型安全</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//混合型Map</span></span><br><span class="line">Map&lt;String,Object&gt; map = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="number">18</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//String</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = hashMap(id -&gt; <span class="string">"5"</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="string">"18"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Integer</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="number">6666</span>,age -&gt; <span class="number">18</span>);</span><br></pre></td></tr></table></figure>
+<p>实现方法至少需要Java 8u60, 而且在编译时需要加上 -parameters 参数, 在gradle可以加上下面的代码<br><figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	configure(<span class="keyword">options</span>) &#123;</span><br><span class="line">		<span class="keyword">options</span>.compilerArgs &lt;&lt; <span class="string">'-parameters'</span> &lt;&lt; <span class="string">'-Xlint:unchecked'</span> </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个实现的关键是<code>SerializedLambda</code></p>
+<p><a href="https://github.com/xuqifzz/Literals/blob/master/Literals.java" target="_blank" rel="noopener">实现代码</a></p>
+<p>下面是代码中最主要的部分, 获取lambda表达式的参数名</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Method replaceMethod = getClass().getDeclaredMethod(<span class="string">"writeReplace"</span>);</span><br><span class="line">replaceMethod.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">SerializedLambda lambda= (SerializedLambda) replaceMethod.invoke(<span class="keyword">this</span>);</span><br><span class="line">Class&lt;?&gt; containingClass = Class.forName(lambda.getImplClass().replaceAll(<span class="string">"/"</span>,<span class="string">"."</span>));</span><br><span class="line">Method method = asList(containingClass.getDeclaredMethods())</span><br><span class="line">        .stream()</span><br><span class="line">        .filter(method0 -&gt; Objects.equals(method0.getName(), lambda.getImplMethodName()))</span><br><span class="line">        .findFirst()</span><br><span class="line">        .orElseThrow(UnableToGuessMethodException::<span class="keyword">new</span>);</span><br><span class="line"><span class="keyword">return</span> method.getParameters()[<span class="number">0</span>].getName();</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.baeldung.com/java-initialize-hashmap" target="_blank" rel="noopener">https://www.baeldung.com/java-initialize-hashmap</a></li>
+<li><a href="https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/" target="_blank" rel="noopener">https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/</a></li>
+<li><a href="https://gist.github.com/galdosd/10823529" target="_blank" rel="noopener">https://gist.github.com/galdosd/10823529</a></li>
+</ul>
+
+          
+        
+      
     </div>
-    <div>
-      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/16/从零开始实现Netty极简版-三-实现ChannelPipeline/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/16/从零开始实现Netty极简版-三-实现ChannelPipeline/" class="post-title-link" itemprop="url">从零开始实现Netty极简版 (三) 实现ChannelPipeline</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-16 22:25:43" itemprop="dateCreated datePublished" datetime="2019-01-16T22:25:43+08:00">2019-01-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 17:24:56" itemprop="dateModified" datetime="2019-01-25T17:24:56+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在从零开始实现Netty极简版 (二)中, 我们已经实现了异步接口, 接下来的目标便是实现<code>ChannelPipeline</code>,也就是Netty中的责任链。</p>
+<p><code>ChannelPipeline</code>是Netty非常重要的特性, 因为要学习使用Netty, 那就必须要了解<code>ChannelPipeline</code>, 在Netty中, 网络通讯几乎所有的关键操作都跟ChannelPipeline有关系, 包括<code>bind</code>, <code>accept</code>, <code>read</code>, <code>write</code>等等。</p>
+<p>由于之前没有实现<code>ChannelPipeline</code>,所以这些相关操作都不是在<code>ChannelPipeline</code>中完成的, 而在本文中, 这些操作都将被被移入它们应该在的位置。<br><a href="https://github.com/xuqifzz/myNetty/tree/section-3/src/main/java/io/xuqi/myNetty" target="_blank" rel="noopener">源码地址</a></p>
+<h3 id="启动代码"><a href="#启动代码" class="headerlink" title="启动代码"></a>启动代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ChannelInboundHandler handler = (ctx,msg) -&gt; &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes = (<span class="keyword">byte</span>[])msg;</span><br><span class="line">    String str = <span class="keyword">new</span> String(bytes);</span><br><span class="line">    System.out.println(<span class="string">"接收到消息:"</span> + str);</span><br><span class="line">    ByteBuffer buffer = ByteBuffer.wrap(bytes);</span><br><span class="line">    ctx.write(buffer).addListener((future) -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">"回复成功"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(handler);</span><br><span class="line"><span class="comment">//这里改成异步调用</span></span><br><span class="line">b.bind(<span class="number">6666</span>).addListener((future)-&gt;&#123;</span><br><span class="line">    System.out.println(<span class="string">"绑定端口成功"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>可以看到, 这次不仅支持了数据读取, 还支持了数据写入, 数据写入也是异步操作, 操作完成后将输出”回复成功”。</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/16/从零开始实现Netty极简版-三-实现ChannelPipeline/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/15/从零开始实现Netty极简版-二-ChanelFuture和ChannelPromise/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/15/从零开始实现Netty极简版-二-ChanelFuture和ChannelPromise/" class="post-title-link" itemprop="url">从零开始实现Netty极简版 (二) ChanelFuture和ChannelPromise</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-15 21:14:45" itemprop="dateCreated datePublished" datetime="2019-01-15T21:14:45+08:00">2019-01-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 17:23:58" itemprop="dateModified" datetime="2019-01-25T17:23:58+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在从零开始实现Netty极简版 (一)中, 我们实现一个基本骨架, 接下来的目标便是实现异步操作。</p>
+<p><a href="https://github.com/xuqifzz/myNetty/tree/section-2/src/main/java/io/xuqi/myNetty" target="_blank" rel="noopener">源码地址</a></p>
+<p>因此服务的启动代码需要做相应升级<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//升级前, bind是同步操作</span></span><br><span class="line">b.bind(<span class="number">6666</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//升级后,bind成为了异步操作,可以添加listener</span></span><br><span class="line">b.bind(<span class="number">6666</span>).addListener((future)-&gt;&#123;</span><br><span class="line">    System.out.println(<span class="string">"绑定端口成功"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/15/从零开始实现Netty极简版-二-ChanelFuture和ChannelPromise/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/14/从零开始实现Netty极简版-一-基本骨架/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/14/从零开始实现Netty极简版-一-基本骨架/" class="post-title-link" itemprop="url">从零开始实现Netty极简版 (一) 基本骨架</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-14 20:09:14" itemprop="dateCreated datePublished" datetime="2019-01-14T20:09:14+08:00">2019-01-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 17:23:44" itemprop="dateModified" datetime="2019-01-25T17:23:44+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>第一步的任务是实现一个基本骨架, 让程序能够跑起来。</p>
+<p>程序能够监听一个指定的端口接收客户端端连接,并在控制台打印出客户端发送过来的字符串。</p>
+<p><a href="https://github.com/xuqifzz/myNetty/tree/section-1/src/main/java/io/xuqi/myNetty" target="_blank" rel="noopener">源码地址</a></p>
+<h3 id="启动代码"><a href="#启动代码" class="headerlink" title="启动代码"></a>启动代码</h3><p>服务端启动代码如下:(是不是跟netty的启动代码很相似?)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ChannelHandler handler = (o) -&gt; &#123;</span><br><span class="line">    <span class="keyword">byte</span>[] bytes = (<span class="keyword">byte</span>[])o;</span><br><span class="line">    String msg = <span class="keyword">new</span> String(bytes);</span><br><span class="line">    System.out.println(<span class="string">"接收到消息:"</span> + msg);</span><br><span class="line">&#125;;</span><br><span class="line">EventLoopGroup bossGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">EventLoopGroup workerGroup = <span class="keyword">new</span> NioEventLoopGroup(<span class="number">1</span>);</span><br><span class="line">ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(handler);</span><br><span class="line">b.bind(<span class="number">6666</span>);</span><br></pre></td></tr></table></figure>
+<p>以上的测试监听了6666端口,并将接收到的文本消息打印到控制台</p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/14/从零开始实现Netty极简版-一-基本骨架/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/13/Netty中的泛型/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/13/Netty中的泛型/" class="post-title-link" itemprop="url">Netty中的泛型</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-13 10:09:15" itemprop="dateCreated datePublished" datetime="2019-01-13T10:09:15+08:00">2019-01-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 19:34:42" itemprop="dateModified" datetime="2019-01-25T19:34:42+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Netty中的泛型用的不是很多，少数几个泛型的目的是为了向用户提供更加友好的接口, 比如启动器类和异步操作类, 而Netty内部的泛型使用很少。</p>
+<h3 id="启动器类"><a href="#启动器类" class="headerlink" title="启动器类"></a>启动器类</h3><p>Netty只提供了<code>Bootstrap</code>以及<code>ServerBootstrap</code>两个启动器类, 其基类是一个泛型类, 定义如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBootstrap</span>&lt;</span></span><br><span class="line"><span class="class">        <span class="title">B</span> <span class="keyword">extends</span> <span class="title">AbstractBootstrap</span>&lt;<span class="title">B</span>, <span class="title">C</span>&gt;, </span></span><br><span class="line"><span class="class">        <span class="title">C</span> <span class="keyword">extends</span> <span class="title">Channel</span></span></span><br><span class="line"><span class="class">        &gt;  <span class="keyword">implements</span> <span class="title">Cloneable</span></span></span><br></pre></td></tr></table></figure>
+<p>乍一看去去这个类的泛型参数定义挺复杂的, 实际上这个类只有一个泛型参数, 那就是<code>C extends Channel</code>, 这个参数表示接收一个Channel的子类作为类型参数.</p>
+<p>所以<code>AbstractBootstrap</code>的定义本该是像下面这样简单的<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractBootstrap</span>&lt;<span class="title">C</span> <span class="keyword">extends</span> <span class="title">Channel</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以多出来的<code>B extends AbstractBootstrap&lt;B, C&gt;</code>是什么鬼?</p>
+<p>实际上这是为了方便最终用户以链式调用的方式使用启动器类的一个实现技巧, <code>B extends AbstractBootstrap&lt;B, C&gt;</code>中的<code>B</code>就是指用户实际使用的启动器类, 这个启动器类是AbstractBootstrap的子类.</p>
+<p>举个栗子, 如果不添加这个参数, 以<code>class AbstractBootstrap&lt;C extends Channel&gt;</code>的方式来定义<code>AbstractBootstrap</code>, 那么它的<code>group</code>方法的前面只能是:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AbstractBootstrap&lt;C&gt; <span class="title">group</span><span class="params">(EventLoopGroup group)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>而用户写下的如下代码便无法编译</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ServerBootstrap b = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">b.group(bossGroup).childHandler( ...)</span><br></pre></td></tr></table></figure>
+<p>无法编译的原因是<code>AbstractBootstrap</code>并未定义<code>childHandler</code>方法, 是这是子类<code>ServerBootstrap</code>自己定义的方法.而<code>gropu</code>方法返回的是<code>AbstractBootstrap</code>, 自然无法调用子类定义的方法.</p>
+<p>而如果在<code>AbstractBootstrap</code>中加上的表示子类自身的泛型参数<code>B extends AbstractBootstrap&lt;B, C&gt;</code>, 那么<code>group</code>方法便可定义成<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> B <span class="title">group</span><span class="params">(EventLoopGroup group)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>因为返回值是B, 也就是子类本身, 在上面的例子中返回的是<code>ServerBootstrap</code>, 这样一来, 链式调用childHandler就没有问题了</p>
+<h3 id="异步操作类"><a href="#异步操作类" class="headerlink" title="异步操作类"></a>异步操作类</h3><p>在<code>Promise</code>的<code>addListener</code>的参数乍一看令人震惊, 下面是<code>addListener</code>的签名以及<code>GenericFutureListener</code>的定义:<br>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/13/Netty中的泛型/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/13/整理Blog内容到GitHub-Pages/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/13/整理Blog内容到GitHub-Pages/" class="post-title-link" itemprop="url">整理Blog内容到GitHub Pages</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-13 09:05:17 / 修改时间：09:17:12" itemprop="dateCreated datePublished" datetime="2019-01-13T09:05:17+08:00">2019-01-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/其他/" itemprop="url" rel="index"><span itemprop="name">其他</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为GitHub Pages已经是程序员博客的大势所趋，再加上以前写的东西比较混乱，决定痛下决心进行整理，希望能有个好的开始。</p>
+<p>这个博客基于<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>创建,由于我还不是很熟,所以放一份快速操作指南在此处方便查询</p>
+<ul>
+<li><a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a></li>
+<li><a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a></li>
+<li><a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">Hexo GitHub Issue</a></li>
+</ul>
+<h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"一篇金光闪闪的文章"</span></span><br><span class="line">$ hexo new draft <span class="string">"一份蓄势待发的草稿"</span></span><br><span class="line">$ hexo publish <span class="string">"一份蓄势待发的草稿"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2018/12/12/Windows下的端口转发/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/12/12/Windows下的端口转发/" class="post-title-link" itemprop="url">Windows下的端口转发</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-12 20:34:55" itemprop="dateCreated datePublished" datetime="2018-12-12T20:34:55+08:00">2018-12-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 12:02:34" itemprop="dateModified" datetime="2019-01-25T12:02:34+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络运维/" itemprop="url" rel="index"><span itemprop="name">网络运维</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="使用powershell中的netsh命令"><a href="#使用powershell中的netsh命令" class="headerlink" title="使用powershell中的netsh命令"></a>使用powershell中的netsh命令</h3><p>端口转发是网络运维中常用到的功能, <code>Windows</code>已经自带了端口转发功能, 可以通过在<code>PowerShell</code>中调用<code>netsh interface portproxy</code>实现, 一般格式如下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netsh interface portproxy add v4tov4 listenaddress=$Lhost listenport=$Lport connectaddress=$Rhost connectport=$Rport</span><br></pre></td></tr></table></figure>
+<p>参数说明可以通过调用<code>netsh interface portproxy add v4tov4 ?</code>进行查看, 比如要监听本地的8554端口, 将其转发到192.168.31.39:554上(进行RTSP流转发).可以调用如下命令:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8554 connectaddress=192.168.31.39 connectport=554</span><br></pre></td></tr></table></figure>
+<p>另外, <code>netsh interface portproxy</code>还支持一些管理命令, 这些命令可以通过<code>netsh interface portproxy ?</code>进行查看, 下面是一份清单:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">命令</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">add</td>
+<td style="text-align:left">在一个表格中添加一个配置项。</td>
+</tr>
+<tr>
+<td style="text-align:left">delete</td>
+<td style="text-align:left">从一个表格中删除一个配置项。</td>
+</tr>
+<tr>
+<td style="text-align:left">dump</td>
+<td style="text-align:left">显示一个配置脚本。</td>
+</tr>
+<tr>
+<td style="text-align:left">help</td>
+<td style="text-align:left">显示命令列表。</td>
+</tr>
+<tr>
+<td style="text-align:left">reset</td>
+<td style="text-align:left">重置端口代理配置状态。</td>
+</tr>
+<tr>
+<td style="text-align:left">set</td>
+<td style="text-align:left">设置配置信息。</td>
+</tr>
+<tr>
+<td style="text-align:left">show</td>
+<td style="text-align:left">显示信息。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用Win-PortFwd管理端口转发"><a href="#使用Win-PortFwd管理端口转发" class="headerlink" title="使用Win-PortFwd管理端口转发"></a>使用Win-PortFwd管理端口转发</h3><p>尽管直接使用<code>PowerShell</code>中的命令不是很复杂, 但仍有人觉得不方便, 这里推荐github上的一个管理脚本<a href="https://github.com/deepzec/Win-PortFwd" target="_blank" rel="noopener">Win-PortFwd</a>, 它提供了比较友好的菜单和向导, 可以更加简单的对转发的端口进行管理</p>
+<h3 id="权限问题"><a href="#权限问题" class="headerlink" title="权限问题"></a>权限问题</h3><p>在添加端口转发的时候有时会出现权限问题, 通常运行下面的命令就可以解决:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set-executionpolicy remotesigned</span><br></pre></td></tr></table></figure></p>
+<h3 id="没有监听端口的问题"><a href="#没有监听端口的问题" class="headerlink" title="没有监听端口的问题"></a>没有监听端口的问题</h3><p>在添加端口后, 也没有报错, 但端口转发就是没有工作, 使用<code>netstat</code>查看监听中的端口, 发现端口根本没有在监听, 这很有可能是因为系统服务列的<code>IP Helper</code>并未启动, 启动该服务即可正常工作。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2015/12/14/搬瓦工主机修改SWAP分区大小/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2015/12/14/搬瓦工主机修改SWAP分区大小/" class="post-title-link" itemprop="url">搬瓦工主机修改SWAP分区大小</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-12-14 09:23:38" itemprop="dateCreated datePublished" datetime="2015-12-14T09:23:38+08:00">2015-12-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-14 06:25:08" itemprop="dateModified" datetime="2019-01-14T06:25:08+08:00">2019-01-14</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/VPS/" itemprop="url" rel="index"><span itemprop="name">VPS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>搬瓦工主机的默认虚拟内存空间总是很小, 所以需要为其配置更大的虚拟内存</p>
+<h3 id="查看SWAP分区大小"><a href="#查看SWAP分区大小" class="headerlink" title="查看SWAP分区大小"></a>查看SWAP分区大小</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">free -h</span><br><span class="line">free -m</span><br></pre></td></tr></table></figure>
+<h3 id="删除所有SWAP分区"><a href="#删除所有SWAP分区" class="headerlink" title="删除所有SWAP分区"></a>删除所有SWAP分区</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">swapoff -a</span><br></pre></td></tr></table></figure>
+<h3 id="添加一个swap文件作为swap"><a href="#添加一个swap文件作为swap" class="headerlink" title="添加一个swap文件作为swap"></a>添加一个swap文件作为swap</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 其中 bs是每块的大小，count是块的数量，bs*count，就是swap文件的大小了，这里就是1M*1024=1G。大家可以自己调整count的数量。</span><br><span class="line"># 此外，/root/swapfile是swap文件的路径，可以根据需求修改。</span><br><span class="line">dd if=/dev/zero of=/root/swapfile bs=1M count=1024</span><br><span class="line"># 建议将权限设置为600</span><br><span class="line">chmod 600 /root/swapfile</span><br><span class="line"></span><br><span class="line"># 格式化swap文件</span><br><span class="line">mkswap /root/swapfile</span><br></pre></td></tr></table></figure>
+<h3 id="启用swap分区文件"><a href="#启用swap分区文件" class="headerlink" title="启用swap分区文件"></a>启用swap分区文件</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">swapon /root/swapfile</span><br></pre></td></tr></table></figure>
+<h3 id="添加开机启动"><a href="#添加开机启动" class="headerlink" title="添加开机启动"></a>添加开机启动</h3><p>修改 <code>/etc/fstab</code> 这个文件，添加或者修改这一行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/root/swapfile swap swap defaults 0 0</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2014/05/15/自定义配置文件解析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/05/15/自定义配置文件解析/" class="post-title-link" itemprop="url">自定义配置文件解析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-05-15 22:45:29" itemprop="dateCreated datePublished" datetime="2014-05-15T22:45:29+08:00">2014-05-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 14:50:04" itemprop="dateModified" datetime="2019-01-25T14:50:04+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/工具开发/" itemprop="url" rel="index"><span itemprop="name">工具开发</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在制作小工具, 绿色软件时, 经常需要定义一些小型配置文件, 这些配置文件格式一般是针对具体业务的,是对业务的精准定义, 因此格式需要清爽简单。</p>
+<h3 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h3><p>这里以一个端口转发的小工具的配置文件为例:</p>
+<ul>
+<li>支持若干组端口转发配置同时工作</li>
+<li>每组端口转发配置需要配置一个监听端口, 以及一组转发目标地址</li>
+<li>每组转发目标地址包括一个ip和一个端口</li>
+</ul>
+<p>用json描述如下<br><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27011</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27012</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27013</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>以上配置文件的意思是:<br>监听27011端口, 并将接收到的数据转发到192.168.30.1:27011上, 若该端口无法连接, 则发送到192.168.30.2:27011上.<br>接着的27012和27013端口也是同理。</p>
+<p>直接使用json当配置文件当然是可以的, 而且有现成的类库解析,不过在这个场景下, 我更加倾向于使用自定义的格式, 这样看起来更加清爽, 比如以下格式:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">27011|192.168.30.1:27011|192.168.30.2:27011</span><br><span class="line">27012|192.168.30.1:27012|192.168.30.2:27012</span><br><span class="line">27013|192.168.30.1:27013|192.168.30.2:27013</span><br></pre></td></tr></table></figure></p>
+<p>我们需要把这段文本解析为<code>List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;</code>,<br>下面就描述如何自己编写代码来解析这段文本</p>
+<h3 id="硬编码解析"><a href="#硬编码解析" class="headerlink" title="硬编码解析"></a>硬编码解析</h3><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);       <span class="comment">//从配置文件中读取所有行</span></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">string</span>[] fields = line.Split(<span class="string">'|'</span>);  <span class="comment">//按|进行切割</span></span><br><span class="line">        <span class="keyword">if</span> (fields.Length &lt; <span class="number">2</span>) <span class="keyword">continue</span>;    <span class="comment">//过滤空行</span></span><br><span class="line">        IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(fields[<span class="number">0</span>]));  <span class="comment">//提取监听端口</span></span><br><span class="line">        List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; fields.Length; i++)     <span class="comment">//提取转发列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> index = fields[i].IndexOf(<span class="string">":"</span>);</span><br><span class="line">            <span class="keyword">if</span> (index != <span class="number">-1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(fields[i].Substring(<span class="number">0</span>, index)), <span class="keyword">int</span>.Parse(fields[i].Substring(index+<span class="number">1</span>))));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (forwordingList.Count &gt; <span class="number">0</span>)   <span class="comment">//过滤掉空列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码的思路是从配置文件读出所有行, 然后对每行以分隔符<code>|</code>进行切割,切割出各个字段后, 再一一分析, 填充进目标数据结构。</p>
+<p>可以看到, 硬编码解析的话,代码比较冗长, 而且语义不清, 如果这段代码不是自己亲手写的, 甚至还难以看懂。</p>
+<h3 id="正则表达式解析"><a href="#正则表达式解析" class="headerlink" title="正则表达式解析"></a>正则表达式解析</h3><p>在解析思路不变的情况下, 我们可以用正则表达式改造以上代码:</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (r.IsMatch(line))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> match = r.Match(line);</span><br><span class="line">            IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(match.Groups[<span class="number">1</span>].Value));</span><br><span class="line">            List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">            <span class="keyword">foreach</span> (Match match2 <span class="keyword">in</span> r2.Matches(match.Groups[<span class="number">2</span>].Value))</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(match2.Groups[<span class="number">1</span>].Value), <span class="keyword">int</span>.Parse(match2.Groups[<span class="number">2</span>].Value)));</span><br><span class="line">            &#125;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们的示例比较简单, 使用正则表达式并未减少代码行数, 只不过使用正则表达式扩展性更强了</p>
+<h3 id="使用lambda表达式"><a href="#使用lambda表达式" class="headerlink" title="使用lambda表达式"></a>使用lambda表达式</h3><p>为了压缩代码行数,以及更加清晰的语义表达, 我们还可以使用大杀器lambda表达式, 经过压缩后代码如下:</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig2()</span><br><span class="line">&#123;</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> File.ReadAllLines(<span class="string">"forward.txt"</span>).ToList()</span><br><span class="line">        .Where( i =&gt; r.IsMatch(i))</span><br><span class="line">        .Select( i=&gt; r.Match(i))</span><br><span class="line">        .Select( i=&gt; <span class="keyword">new</span>  Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(</span><br><span class="line">            <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(i.Groups[<span class="number">1</span>].Value)),</span><br><span class="line">            (<span class="keyword">from</span> Match j <span class="keyword">in</span> r2.Matches(i.Groups[<span class="number">2</span>].Value) <span class="function"><span class="keyword">select</span> new <span class="title">IPEndPoint</span>(<span class="params">IPAddress.Parse(j.Groups[<span class="number">1</span>].Value</span>), <span class="keyword">int</span>.<span class="title">Parse</span>(<span class="params">j.Groups[<span class="number">2</span>].Value</span>))).<span class="title">ToList</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">            )           </span></span><br><span class="line"><span class="function">        ).<span class="title">ToList</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到代码行数下降了很多, 而且这种方式的表达更加清晰。<a href="https://github.com/xuqifzz/TcpForwording/blob/master/Program.cs" target="_blank" rel="noopener">完整代码</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2014/05/11/高可用的端口转发/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2014/05/11/高可用的端口转发/" class="post-title-link" itemprop="url">高可用的端口转发</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-05-11 01:45:37" itemprop="dateCreated datePublished" datetime="2014-05-11T01:45:37+08:00">2014-05-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-25 11:59:26" itemprop="dateModified" datetime="2019-01-25T11:59:26+08:00">2019-01-25</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络运维/" itemprop="url" rel="index"><span itemprop="name">网络运维</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在windows下, 利用<code>netsh</code>可以实现端口转发功能, 能满足大部分日常需求, 但在某些情况下, 在后端节点不可用的时候, 需要将数据转发至另一节点, 这时就只能自行编码实现了。</p>
+<p>本文将使用C#做一个简单的实现: <a href="https://github.com/xuqifzz/TcpForwording/blob/master/Proxy.cs" target="_blank" rel="noopener">完整代码</a></p>
+<h3 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h3><ul>
+<li>因为需要转发数据, 所以程序肯定是要监听端口的</li>
+<li>为了避免数据混乱和复杂性, 这里每个端口只接收一个连接, 所以接收到新连接后, 关闭端口监听</li>
+<li>若长时间没有数据通讯, 则主动关闭连接, 释放资源</li>
+<li>开启两个工作线程,  一个叫代理线程, 一个叫转发线程</li>
+</ul>
+<h3 id="代理线程工作流程"><a href="#代理线程工作流程" class="headerlink" title="代理线程工作流程"></a>代理线程工作流程</h3><p>代理线程负责接收外来连接, 并确保同一时间只有一个外来连接, 接收到连接后读取数据, 读取到数据后, 将数据转发到指定目标地址。</p>
+<p>主要代码:<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line">server = <span class="keyword">new</span> TcpListener(listen);</span><br><span class="line">server.Start(<span class="number">1</span>);</span><br><span class="line">client = server.AcceptTcpClient();</span><br><span class="line">server.Stop();      <span class="comment">//停止监听, 同一时间只接收一个连接</span></span><br><span class="line">server = <span class="literal">null</span>;</span><br><span class="line">listenStream = client.GetStream();</span><br><span class="line">listenStream.ReadTimeout = READ_TIMEOUT;</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> len = listenStream.Read(buffer, <span class="number">0</span>, BUFF_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] tmp = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        Array.Copy(buffer, tmp, len);</span><br><span class="line">        Forwarding(tmp);  <span class="comment">//转发数据</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//.. 处理连接中断</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="转发线程工作流程"><a href="#转发线程工作流程" class="headerlink" title="转发线程工作流程"></a>转发线程工作流程</h3><p>转发线程负责连接目标地址, 一个连不上再去连接下一个, 当连上后, 等待接收数据, 接收到数据后, 将数据转发到代理连接上去。</p>
+<p>主要代码:<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line">client = <span class="keyword">new</span> TcpClient();</span><br><span class="line"><span class="keyword">var</span> result = client.BeginConnect(currentEndPoint.Address, currentEndPoint.Port, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">var</span> success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(CONNECT_TIMEOUT));</span><br><span class="line"><span class="keyword">if</span> (!success)   <span class="comment">//超时处理</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"connect &#123;0&#125; timeout"</span>, currentEndPoint);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125;</span><br><span class="line">client.EndConnect(result);</span><br><span class="line">forwardingStream = client.GetStream();</span><br><span class="line">forwardingStream.ReadTimeout = READ_TIMEOUT;</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> len = forwardingStream.Read(buffer, <span class="number">0</span>, BUFF_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] tmp = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        Array.Copy(buffer, tmp, len);</span><br><span class="line">        Response(tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//.. 处理连接中断</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
     </div>
   </div>
-</footer>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">徐琦</p>
+              <p class="site-description motion-element" itemprop="description">专注于应用程序框架开发</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.baidu.com/" title="https://www.baidu.com/" rel="noopener" target="_blank">百度</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.google.com/" title="https://www.google.com/" rel="noopener" target="_blank">谷歌</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.zhihu.com/" title="https://www.zhihu.com/" rel="noopener" target="_blank">知乎</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
 
 
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">徐琦</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 </body>
 </html>
