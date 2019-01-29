@@ -100,24 +100,24 @@
 <meta name="keywords" content="JVM,案例分析">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用PhantomReference以及GC日志分析GC如何工作">
-<meta property="og:url" content="http://xuqifzz.github.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/index.html">
+<meta property="og:url" content="https://blog.xuqi.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/index.html">
 <meta property="og:site_name" content="徐琦的博客">
 <meta property="og:description" content="基本思路写一段程序, 每隔很短的间隔创建一个大对象, 并按照一定的规则hold住或者丢弃这个对象, 直到抛出OutOfMemoryError, 在此过程中观察GC的工作日志。 参数设定 从1开始递增计数, 每隔30毫秒创建一个大小为1M的bigObject对象, 如果当前计数4的倍数, 则hold住这个对象,将其放入到一个hold队列中, 不让GC将其释放,否则直接丢弃该对象 如果当前计数为5的倍">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://xuqifzz.github.io/images/gc1.png">
-<meta property="og:image" content="http://xuqifzz.github.io/images/gc2.png">
+<meta property="og:image" content="https://blog.xuqi.io/images/gc1.png">
+<meta property="og:image" content="https://blog.xuqi.io/images/gc2.png">
 <meta property="og:updated_time" content="2019-01-29T01:47:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用PhantomReference以及GC日志分析GC如何工作">
 <meta name="twitter:description" content="基本思路写一段程序, 每隔很短的间隔创建一个大对象, 并按照一定的规则hold住或者丢弃这个对象, 直到抛出OutOfMemoryError, 在此过程中观察GC的工作日志。 参数设定 从1开始递增计数, 每隔30毫秒创建一个大小为1M的bigObject对象, 如果当前计数4的倍数, 则hold住这个对象,将其放入到一个hold队列中, 不让GC将其释放,否则直接丢弃该对象 如果当前计数为5的倍">
-<meta name="twitter:image" content="http://xuqifzz.github.io/images/gc1.png">
+<meta name="twitter:image" content="https://blog.xuqi.io/images/gc1.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://xuqifzz.github.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/">
+  <link rel="canonical" href="https://blog.xuqi.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/">
 
 
 
@@ -301,7 +301,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/">
+    <link itemprop="mainEntityOfPage" href="https://blog.xuqi.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
