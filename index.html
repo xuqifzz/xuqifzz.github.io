@@ -54,10 +54,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
 
 
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-code.png?v=6.7.0">
 
 
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-code.png?v=6.7.0">
 
 
   <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
@@ -297,12 +297,12 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/23/使用字面值初始化Map/">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -317,7 +317,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/01/23/使用字面值初始化Map/" class="post-title-link" itemprop="url">使用字面值初始化Map</a>
+                <a href="/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/" class="post-title-link" itemprop="url">使用PhantomReference以及GC日志分析GC如何工作</a>
               
             
           </h1>
@@ -342,24 +342,12 @@
                 
               
 
-              <time title="创建时间：2019-01-23 17:24:38" itemprop="dateCreated datePublished" datetime="2019-01-23T17:24:38+08:00">2019-01-23</time>
+              <time title="创建时间：2019-01-29 09:26:39 / 修改时间：09:47:02" itemprop="dateCreated datePublished" datetime="2019-01-29T09:26:39+08:00">2019-01-29</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-25 19:36:50" itemprop="dateModified" datetime="2019-01-25T19:36:50+08:00">2019-01-25</time>
               
             
           </span>
@@ -411,47 +399,26 @@
 
       
         
-          
-            <p>在Java中使用字面值初始化一个Map很困难, 正如Java的一贯作风, 代码比较恶心, 比如<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">myMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">myMap.put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">myMap.put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">myMap.put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
-<p>这令强迫症实在难以忍受, 所以我决定研究一下看看有什么”优雅”的解决方案</p>
-<h3 id="其他语言的做法"><a href="#其他语言的做法" class="headerlink" title="其他语言的做法"></a>其他语言的做法</h3><ul>
-<li><p>Javascript</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap=&#123;<span class="attr">id</span>:<span class="number">5</span>, <span class="attr">name</span>: <span class="string">"xuqi"</span>, <span class="attr">age</span>: <span class="number">18</span>&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Python</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">myMap = &#123;<span class="string">'id'</span>: <span class="number">5</span>, name: <span class="string">'xuqi'</span>, <span class="string">'age'</span>: <span class="number">18</span>&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>C#</p>
-<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, Object&gt; &#123;&#123;<span class="string">"id"</span>, <span class="number">5</span>&#125;, &#123;<span class="string">"name"</span>, <span class="string">"xuqi"</span>&#125;, &#123;<span class="string">"age"</span>, <span class="number">18</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>C++ (就连C++ 都…)</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; int_to_string = &#123;&#123;<span class="number">1</span>, <span class="string">"java"</span>&#125;, &#123;<span class="number">2</span>, <span class="string">"is"</span>&#125;, &#123;<span class="number">3</span>, <span class="string">"pretty"</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
-</li>
+          <h3 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h3><p>写一段程序, 每隔很短的间隔创建一个大对象, 并按照一定的规则hold住或者丢弃这个对象, 直到抛出<code>OutOfMemoryError</code>, 在此过程中观察GC的工作日志。</p>
+<h3 id="参数设定"><a href="#参数设定" class="headerlink" title="参数设定"></a>参数设定</h3><ul>
+<li>从1开始递增计数, 每隔30毫秒创建一个大小为1M的bigObject对象,</li>
+<li>如果当前计数4的倍数, 则hold住这个对象,将其放入到一个hold队列中, 不让GC将其释放,否则直接丢弃该对象</li>
+<li>如果当前计数为5的倍数, 则从hold队列中丢弃一个对象</li>
+<li>通过以上规则, hold队列中对象释放的速度没有增加的速度快, 因此<code>OutOfMemoryError</code>是必然结局</li>
 </ul>
-<h3 id="Java中的一些解决办法"><a href="#Java中的一些解决办法" class="headerlink" title="Java中的一些解决办法"></a>Java中的一些解决办法</h3><h4 id="双括号初始化法"><a href="#双括号初始化法" class="headerlink" title="双括号初始化法"></a>双括号初始化法</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这个方法多了一些多余的put很令人不爽</span></span><br><span class="line">Map&lt;String , Object&gt; map = <span class="keyword">new</span> HashMap&lt;String , Object&gt;()&#123;&#123;</span><br><span class="line">    put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">    put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">    put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="二维数组封装法"><a href="#二维数组封装法" class="headerlink" title="二维数组封装法"></a>二维数组封装法</h4><p>定义如下函数:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,String&gt; <span class="title">createStringMap</span><span class="params">(String[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; data[<span class="number">0</span>], data -&gt; data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,Integer&gt; <span class="title">createIntegerMap</span><span class="params">(Object[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; (String) data[<span class="number">0</span>], data -&gt; (Integer) data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>则可以用如下方式创建Map<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建值为String的Map</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = </span><br><span class="line">    createStringMap(<span class="keyword">new</span> String[][] &#123;&#123; <span class="string">"key1"</span>, <span class="string">"value1"</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="string">"value2"</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="string">"value3"</span> &#125;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建值为Integer的Map</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = </span><br><span class="line">    createIntegerMap(<span class="keyword">new</span> Object[][] &#123;&#123; <span class="string">"key1"</span>, <span class="number">1</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="number">2</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="number">3</span> &#125;&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>遗憾的是, 因为Java<em>强大的类型擦除特性</em>, 通过这个思路暂时无法写出下面的方法, 除非再加个恶心的<code>Class&lt;T&gt;</code>参数<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//该方法因为类型擦除无法实现</span></span><br><span class="line"><span class="keyword">static</span>  &lt;T&gt; <span class="function">Map&lt;String,T&gt; <span class="title">createMap</span><span class="params">(Object[][] entries)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>另外这个方式也没有编译时检查功能, 不太安全。</p>
-<h4 id="参数列表封装法"><a href="#参数列表封装法" class="headerlink" title="参数列表封装法"></a>参数列表封装法</h4><p>有很多类库都是这个办法,比如Java 9的<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; unmodifiableMap = Map.of(<span class="string">"key1"</span>, <span class="string">"value1"</span>, <span class="string">"key2"</span>, <span class="string">"value2"</span>);</span><br></pre></td></tr></table></figure></p>
-<p>自己实现的话,大概可以这样<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;A&gt; <span class="function">Map&lt;String, A&gt; <span class="title">asMap</span><span class="params">(Object... keysAndValues)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LinkedHashMap&lt;String, A&gt;() &#123;&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; keysAndValues.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            put(keysAndValues[i].toString(), (A) keysAndValues[++i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>可以这样调用<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; one = asMap(<span class="string">"1stKey"</span>, <span class="string">"1stVal"</span>, <span class="string">"2ndKey"</span>, <span class="string">"2ndVal"</span>);</span><br><span class="line">Map&lt;String, Object&gt; two = asMap(<span class="string">"1stKey"</span>, Boolean.TRUE, <span class="string">"2ndKey"</span>, <span class="keyword">new</span> Integer(<span class="number">2</span>));</span><br></pre></td></tr></table></figure></p>
-<p>上面的asMap没有编译期类型安全检查, 而Java9的版本似乎是安全的,但好像参数数量有限制,而且限制的数量还很少(这点我没去确认)</p>
-<p>另外这个方式语义也不太好, Map应该是一对对的,不是吗?</p>
-<h4 id="目前最优雅的办法-lambda"><a href="#目前最优雅的办法-lambda" class="headerlink" title="目前最优雅的办法-lambda"></a>目前最优雅的办法-lambda</h4><p>查了N多资料后,我终于找到了一个优雅的办法, 那就是使用lambda表达式, 客户代码很简单, 而且类型安全</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//混合型Map</span></span><br><span class="line">Map&lt;String,Object&gt; map = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="number">18</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//String</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = hashMap(id -&gt; <span class="string">"5"</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="string">"18"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Integer</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="number">6666</span>,age -&gt; <span class="number">18</span>);</span><br></pre></td></tr></table></figure>
-<p>实现方法至少需要Java 8u60, 而且在编译时需要加上 -parameters 参数, 在gradle可以加上下面的代码<br><figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	configure(<span class="keyword">options</span>) &#123;</span><br><span class="line">		<span class="keyword">options</span>.compilerArgs &lt;&lt; <span class="string">'-parameters'</span> &lt;&lt; <span class="string">'-Xlint:unchecked'</span> </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个实现的关键是<code>SerializedLambda</code></p>
-<p><a href="https://github.com/xuqifzz/Literals/blob/master/Literals.java" target="_blank" rel="noopener">实现代码</a></p>
-<p>下面是代码中最主要的部分, 获取lambda表达式的参数名</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Method replaceMethod = getClass().getDeclaredMethod(<span class="string">"writeReplace"</span>);</span><br><span class="line">replaceMethod.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">SerializedLambda lambda= (SerializedLambda) replaceMethod.invoke(<span class="keyword">this</span>);</span><br><span class="line">Class&lt;?&gt; containingClass = Class.forName(lambda.getImplClass().replaceAll(<span class="string">"/"</span>,<span class="string">"."</span>));</span><br><span class="line">Method method = asList(containingClass.getDeclaredMethods())</span><br><span class="line">        .stream()</span><br><span class="line">        .filter(method0 -&gt; Objects.equals(method0.getName(), lambda.getImplMethodName()))</span><br><span class="line">        .findFirst()</span><br><span class="line">        .orElseThrow(UnableToGuessMethodException::<span class="keyword">new</span>);</span><br><span class="line"><span class="keyword">return</span> method.getParameters()[<span class="number">0</span>].getName();</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><a href="https://www.baeldung.com/java-initialize-hashmap" target="_blank" rel="noopener">https://www.baeldung.com/java-initialize-hashmap</a></li>
-<li><a href="https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/" target="_blank" rel="noopener">https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/</a></li>
-<li><a href="https://gist.github.com/galdosd/10823529" target="_blank" rel="noopener">https://gist.github.com/galdosd/10823529</a></li>
-</ul>
-
+<h3 id="观察方法"><a href="#观察方法" class="headerlink" title="观察方法"></a>观察方法</h3><p>Java生成的GC日志只会记录GC发生前后新生代和老年代的空间变化情况, 而我想进一步知道每次GC都释放了多少个bigObjec对象, 所以这里会采用PhantomReference来跟踪bigObjec的释放情况。</p>
+<h3 id="主要代码"><a href="#主要代码" class="headerlink" title="主要代码"></a>主要代码</h3><p><a href="https://github.com/xuqifzz/sample/blob/master/java/MyGcTest/MyGcTest.java" target="_blank" rel="noopener">完整代码在这里</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">long</span> i = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="keyword">for</span> (; ; i++) &#123;</span><br><span class="line">		<span class="keyword">byte</span>[] bigObject = <span class="keyword">new</span> <span class="keyword">byte</span>[Unit];<span class="comment">//本程序的GC基本上都是由本行代码触发</span></span><br><span class="line">		register(bigObject);	  <span class="comment">//使用PhantomReference跟踪bigObject的释放情况,并调用checkGC()</span></span><br><span class="line">		<span class="keyword">if</span> (i % <span class="number">4</span> == <span class="number">0</span>) holder.add(bigObject);		</span><br><span class="line">		<span class="keyword">if</span> (i %<span class="number">5</span> == <span class="number">0</span>) holder.poll();</span><br><span class="line">		Thread.sleep(<span class="number">30</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">catch</span> (`OutOfMemoryError` error) &#123;</span><br><span class="line">	System.out.println(<span class="string">"`OutOfMemoryError`: 一共创建bigObject:"</span> + (i-<span class="number">1</span>) + <span class="string">"个,GC次数:"</span> + gcCount);</span><br><span class="line">	System.out.println(<span class="string">"总共成功回收bigObject:"</span> + gcObjectCount + <span class="string">",堆中还剩下:"</span> + phantomSet.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="检测一次GC回收了多少个对象代码"><a href="#检测一次GC回收了多少个对象代码" class="headerlink" title="检测一次GC回收了多少个对象代码"></a>检测一次GC回收了多少个对象代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(<span class="keyword">byte</span>[] bigObject)</span></span>&#123;</span><br><span class="line">    System.out.print(<span class="string">"."</span>);  <span class="comment">//打一个点表示成功创建一个bigObject</span></span><br><span class="line">	phantomSet.add(<span class="keyword">new</span> PhantomReference&lt;&gt;(bigObject,phantomReferenceQueue));</span><br><span class="line">	checkGC();</span><br><span class="line">    System.out.print(<span class="string">"."</span>);  <span class="comment">//打一个点表示成功创建一个bigObject</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkGC</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	Reference&lt;?&gt; reference = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">while</span> ((reference = phantomReferenceQueue.poll()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">		count++;</span><br><span class="line">		phantomSet.remove(reference);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(count &gt; <span class="number">0</span>)&#123;</span><br><span class="line">		System.out.println(<span class="string">"下次GC将回收bigObject:"</span> + count );</span><br><span class="line">		gcCount++;</span><br><span class="line">		gcObjectCount += count;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/29/使用PhantomReference以及GC日志分析GC如何工作/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -511,7 +478,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -693,7 +660,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -873,7 +840,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1056,7 +1023,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1247,7 +1214,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1421,7 +1388,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1633,12 +1600,398 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2017/01/26/使用字面值初始化Map/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2017/01/26/使用字面值初始化Map/" class="post-title-link" itemprop="url">使用字面值初始化Map</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-01-26 17:24:38" itemprop="dateCreated datePublished" datetime="2017-01-26T17:24:38+08:00">2017-01-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-29 09:49:36" itemprop="dateModified" datetime="2019-01-29T09:49:36+08:00">2019-01-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Java中使用字面值初始化一个Map很困难, 正如Java的一贯作风, 代码比较恶心, 比如<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">myMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">myMap.put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">myMap.put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">myMap.put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这令强迫症实在难以忍受, 所以我决定研究一下看看有什么”优雅”的解决方案</p>
+<h3 id="其他语言的做法"><a href="#其他语言的做法" class="headerlink" title="其他语言的做法"></a>其他语言的做法</h3><ul>
+<li><p>Javascript</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap=&#123;<span class="attr">id</span>:<span class="number">5</span>, <span class="attr">name</span>: <span class="string">"xuqi"</span>, <span class="attr">age</span>: <span class="number">18</span>&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Python</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">myMap = &#123;<span class="string">'id'</span>: <span class="number">5</span>, name: <span class="string">'xuqi'</span>, <span class="string">'age'</span>: <span class="number">18</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C#</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMap = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, Object&gt; &#123;&#123;<span class="string">"id"</span>, <span class="number">5</span>&#125;, &#123;<span class="string">"name"</span>, <span class="string">"xuqi"</span>&#125;, &#123;<span class="string">"age"</span>, <span class="number">18</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C++ (就连C++ 都…)</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; int_to_string = &#123;&#123;<span class="number">1</span>, <span class="string">"java"</span>&#125;, &#123;<span class="number">2</span>, <span class="string">"is"</span>&#125;, &#123;<span class="number">3</span>, <span class="string">"pretty"</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Java中的一些解决办法"><a href="#Java中的一些解决办法" class="headerlink" title="Java中的一些解决办法"></a>Java中的一些解决办法</h3><h4 id="双括号初始化法"><a href="#双括号初始化法" class="headerlink" title="双括号初始化法"></a>双括号初始化法</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//这个方法多了一些多余的put很令人不爽</span></span><br><span class="line">Map&lt;String , Object&gt; map = <span class="keyword">new</span> HashMap&lt;String , Object&gt;()&#123;&#123;</span><br><span class="line">    put(<span class="string">"id"</span>, <span class="number">5</span>);</span><br><span class="line">    put(<span class="string">"name"</span>, <span class="string">"xuqi"</span>);</span><br><span class="line">    put(<span class="string">"age"</span>, <span class="number">18</span>);</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="二维数组封装法"><a href="#二维数组封装法" class="headerlink" title="二维数组封装法"></a>二维数组封装法</h4><p>定义如下函数:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,String&gt; <span class="title">createStringMap</span><span class="params">(String[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; data[<span class="number">0</span>], data -&gt; data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> Map&lt;String,Integer&gt; <span class="title">createIntegerMap</span><span class="params">(Object[][] entries)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(entries).collect(Collectors.toMap(data -&gt; (String) data[<span class="number">0</span>], data -&gt; (Integer) data[<span class="number">1</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>则可以用如下方式创建Map<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建值为String的Map</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = </span><br><span class="line">    createStringMap(<span class="keyword">new</span> String[][] &#123;&#123; <span class="string">"key1"</span>, <span class="string">"value1"</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="string">"value2"</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="string">"value3"</span> &#125;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建值为Integer的Map</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = </span><br><span class="line">    createIntegerMap(<span class="keyword">new</span> Object[][] &#123;&#123; <span class="string">"key1"</span>, <span class="number">1</span> &#125;,&#123; <span class="string">"key2"</span>, <span class="number">2</span> &#125;,&#123; <span class="string">"key3"</span>, <span class="number">3</span> &#125;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>遗憾的是, 因为Java<em>强大的类型擦除特性</em>, 通过这个思路暂时无法写出下面的方法, 除非再加个恶心的<code>Class&lt;T&gt;</code>参数<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//该方法因为类型擦除无法实现</span></span><br><span class="line"><span class="keyword">static</span>  &lt;T&gt; <span class="function">Map&lt;String,T&gt; <span class="title">createMap</span><span class="params">(Object[][] entries)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>另外这个方式也没有编译时检查功能, 不太安全。</p>
+<h4 id="参数列表封装法"><a href="#参数列表封装法" class="headerlink" title="参数列表封装法"></a>参数列表封装法</h4><p>有很多类库都是这个办法,比如Java 9的<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; unmodifiableMap = Map.of(<span class="string">"key1"</span>, <span class="string">"value1"</span>, <span class="string">"key2"</span>, <span class="string">"value2"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>自己实现的话,大概可以这样<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;A&gt; <span class="function">Map&lt;String, A&gt; <span class="title">asMap</span><span class="params">(Object... keysAndValues)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LinkedHashMap&lt;String, A&gt;() &#123;&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; keysAndValues.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">            put(keysAndValues[i].toString(), (A) keysAndValues[++i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以这样调用<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, String&gt; one = asMap(<span class="string">"1stKey"</span>, <span class="string">"1stVal"</span>, <span class="string">"2ndKey"</span>, <span class="string">"2ndVal"</span>);</span><br><span class="line">Map&lt;String, Object&gt; two = asMap(<span class="string">"1stKey"</span>, Boolean.TRUE, <span class="string">"2ndKey"</span>, <span class="keyword">new</span> Integer(<span class="number">2</span>));</span><br></pre></td></tr></table></figure></p>
+<p>上面的asMap没有编译期类型安全检查, 而Java9的版本似乎是安全的,但好像参数数量有限制,而且限制的数量还很少(这点我没去确认)</p>
+<p>另外这个方式语义也不太好, Map应该是一对对的,不是吗?</p>
+<h4 id="目前最优雅的办法-lambda"><a href="#目前最优雅的办法-lambda" class="headerlink" title="目前最优雅的办法-lambda"></a>目前最优雅的办法-lambda</h4><p>查了N多资料后,我终于找到了一个优雅的办法, 那就是使用lambda表达式, 客户代码很简单, 而且类型安全</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//混合型Map</span></span><br><span class="line">Map&lt;String,Object&gt; map = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="number">18</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//String</span></span><br><span class="line">Map&lt;String,String&gt; stringMap = hashMap(id -&gt; <span class="string">"5"</span>,name -&gt; <span class="string">"xuqi"</span>,age -&gt; <span class="string">"18"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Integer</span></span><br><span class="line">Map&lt;String,Integer&gt; intMap = hashMap(id -&gt; <span class="number">5</span>,name -&gt; <span class="number">6666</span>,age -&gt; <span class="number">18</span>);</span><br></pre></td></tr></table></figure>
+<p>实现方法至少需要Java 8u60, 而且在编译时需要加上 -parameters 参数, 在gradle可以加上下面的代码<br><figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	configure(<span class="keyword">options</span>) &#123;</span><br><span class="line">		<span class="keyword">options</span>.compilerArgs &lt;&lt; <span class="string">'-parameters'</span> &lt;&lt; <span class="string">'-Xlint:unchecked'</span> </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个实现的关键是<code>SerializedLambda</code></p>
+<p><a href="https://github.com/xuqifzz/Literals/blob/master/Literals.java" target="_blank" rel="noopener">实现代码</a></p>
+<p>下面是代码中最主要的部分, 获取lambda表达式的参数名</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Method replaceMethod = getClass().getDeclaredMethod(<span class="string">"writeReplace"</span>);</span><br><span class="line">replaceMethod.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">SerializedLambda lambda= (SerializedLambda) replaceMethod.invoke(<span class="keyword">this</span>);</span><br><span class="line">Class&lt;?&gt; containingClass = Class.forName(lambda.getImplClass().replaceAll(<span class="string">"/"</span>,<span class="string">"."</span>));</span><br><span class="line">Method method = asList(containingClass.getDeclaredMethods())</span><br><span class="line">        .stream()</span><br><span class="line">        .filter(method0 -&gt; Objects.equals(method0.getName(), lambda.getImplMethodName()))</span><br><span class="line">        .findFirst()</span><br><span class="line">        .orElseThrow(UnableToGuessMethodException::<span class="keyword">new</span>);</span><br><span class="line"><span class="keyword">return</span> method.getParameters()[<span class="number">0</span>].getName();</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.baeldung.com/java-initialize-hashmap" target="_blank" rel="noopener">https://www.baeldung.com/java-initialize-hashmap</a></li>
+<li><a href="https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/" target="_blank" rel="noopener">https://benjiweber.co.uk/blog/2015/08/17/lambda-parameter-names-with-reflection/</a></li>
+<li><a href="https://gist.github.com/galdosd/10823529" target="_blank" rel="noopener">https://gist.github.com/galdosd/10823529</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2016/10/16/检查一个对象是否被GC的方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="徐琦">
+      <meta itemprop="description" content="专注于应用程序框架开发">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="徐琦的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2016/10/16/检查一个对象是否被GC的方法/" class="post-title-link" itemprop="url">检查一个对象是否被GC的方法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-10-16 23:06:16" itemprop="dateCreated datePublished" datetime="2016-10-16T23:06:16+08:00">2016-10-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-29 09:07:30" itemprop="dateModified" datetime="2019-01-29T09:07:30+08:00">2019-01-29</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在Java中,可以使用<code>PhantomReference</code>来检查一个对象是否被GC,示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trackGC</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    Object o = <span class="keyword">new</span> Object();</span><br><span class="line">    ReferenceQueue&lt;Object&gt; queue = <span class="keyword">new</span> ReferenceQueue&lt;&gt;();</span><br><span class="line">    PhantomReference&lt;Object&gt; phantomReference = <span class="keyword">new</span> PhantomReference&lt;&gt;(o, queue);</span><br><span class="line">    assertNull(queue.poll());</span><br><span class="line">    o = <span class="keyword">null</span>;</span><br><span class="line">    System.gc();</span><br><span class="line">    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">    assertNotNull(queue.poll());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一点要注意, <code>phantomReference</code>不能在<code>gc</code>之前就赋值为null, 不然会收不到通知。<br>比如把<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PhantomReference&lt;Object&gt; phantomReference = <span class="keyword">new</span> PhantomReference&lt;&gt;(o, queue);</span><br></pre></td></tr></table></figure></p>
+<p>替换为:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> PhantomReference&lt;&gt;(o, queue);</span><br></pre></td></tr></table></figure></p>
+<p>或<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PhantomReference&lt;Object&gt; phantomReference = <span class="keyword">new</span> PhantomReference&lt;&gt;(o, queue);</span><br><span class="line">phantomReference = <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure></p>
+<p>都会导致测试失败</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2015/12/14/搬瓦工主机修改SWAP分区大小/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="徐琦">
       <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1796,392 +2149,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2014/05/15/自定义配置文件解析/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="徐琦">
-      <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="徐琦的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/15/自定义配置文件解析/" class="post-title-link" itemprop="url">自定义配置文件解析</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2014-05-15 22:45:29" itemprop="dateCreated datePublished" datetime="2014-05-15T22:45:29+08:00">2014-05-15</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-25 14:50:04" itemprop="dateModified" datetime="2019-01-25T14:50:04+08:00">2019-01-25</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/工具开发/" itemprop="url" rel="index"><span itemprop="name">工具开发</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在制作小工具, 绿色软件时, 经常需要定义一些小型配置文件, 这些配置文件格式一般是针对具体业务的,是对业务的精准定义, 因此格式需要清爽简单。</p>
-<h3 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h3><p>这里以一个端口转发的小工具的配置文件为例:</p>
-<ul>
-<li>支持若干组端口转发配置同时工作</li>
-<li>每组端口转发配置需要配置一个监听端口, 以及一组转发目标地址</li>
-<li>每组转发目标地址包括一个ip和一个端口</li>
-</ul>
-<p>用json描述如下<br><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27011</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27011</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27012</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27012</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">        <span class="attr">"bind"</span>: <span class="number">27013</span>,</span><br><span class="line">        <span class="attr">"forwarding"</span>:[</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.1"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;,</span><br><span class="line">            &#123;<span class="attr">"ip"</span>:<span class="string">"192.168.30.2"</span>, <span class="attr">"port"</span>: <span class="number">27013</span>&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
-<p>以上配置文件的意思是:<br>监听27011端口, 并将接收到的数据转发到192.168.30.1:27011上, 若该端口无法连接, 则发送到192.168.30.2:27011上.<br>接着的27012和27013端口也是同理。</p>
-<p>直接使用json当配置文件当然是可以的, 而且有现成的类库解析,不过在这个场景下, 我更加倾向于使用自定义的格式, 这样看起来更加清爽, 比如以下格式:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">27011|192.168.30.1:27011|192.168.30.2:27011</span><br><span class="line">27012|192.168.30.1:27012|192.168.30.2:27012</span><br><span class="line">27013|192.168.30.1:27013|192.168.30.2:27013</span><br></pre></td></tr></table></figure></p>
-<p>我们需要把这段文本解析为<code>List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;</code>,<br>下面就描述如何自己编写代码来解析这段文本</p>
-<h3 id="硬编码解析"><a href="#硬编码解析" class="headerlink" title="硬编码解析"></a>硬编码解析</h3><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);       <span class="comment">//从配置文件中读取所有行</span></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">string</span>[] fields = line.Split(<span class="string">'|'</span>);  <span class="comment">//按|进行切割</span></span><br><span class="line">        <span class="keyword">if</span> (fields.Length &lt; <span class="number">2</span>) <span class="keyword">continue</span>;    <span class="comment">//过滤空行</span></span><br><span class="line">        IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(fields[<span class="number">0</span>]));  <span class="comment">//提取监听端口</span></span><br><span class="line">        List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; fields.Length; i++)     <span class="comment">//提取转发列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> index = fields[i].IndexOf(<span class="string">":"</span>);</span><br><span class="line">            <span class="keyword">if</span> (index != <span class="number">-1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(fields[i].Substring(<span class="number">0</span>, index)), <span class="keyword">int</span>.Parse(fields[i].Substring(index+<span class="number">1</span>))));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (forwordingList.Count &gt; <span class="number">0</span>)   <span class="comment">//过滤掉空列表</span></span><br><span class="line">        &#123;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这段代码的思路是从配置文件读出所有行, 然后对每行以分隔符<code>|</code>进行切割,切割出各个字段后, 再一一分析, 填充进目标数据结构。</p>
-<p>可以看到, 硬编码解析的话,代码比较冗长, 而且语义不清, 如果这段代码不是自己亲手写的, 甚至还难以看懂。</p>
-<h3 id="正则表达式解析"><a href="#正则表达式解析" class="headerlink" title="正则表达式解析"></a>正则表达式解析</h3><p>在解析思路不变的情况下, 我们可以用正则表达式改造以上代码:</p>
-<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="keyword">new</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt;();</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line">    <span class="keyword">var</span> lines = File.ReadAllLines(<span class="string">"forward.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> line <span class="keyword">in</span> lines)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (r.IsMatch(line))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> match = r.Match(line);</span><br><span class="line">            IPEndPoint main = <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(match.Groups[<span class="number">1</span>].Value));</span><br><span class="line">            List&lt;IPEndPoint&gt; forwordingList = <span class="keyword">new</span> List&lt;IPEndPoint&gt;();</span><br><span class="line">            <span class="keyword">foreach</span> (Match match2 <span class="keyword">in</span> r2.Matches(match.Groups[<span class="number">2</span>].Value))</span><br><span class="line">            &#123;</span><br><span class="line">                forwordingList.Add(<span class="keyword">new</span> IPEndPoint(IPAddress.Parse(match2.Groups[<span class="number">1</span>].Value), <span class="keyword">int</span>.Parse(match2.Groups[<span class="number">2</span>].Value)));</span><br><span class="line">            &#125;</span><br><span class="line">            result.Add(<span class="keyword">new</span> Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(main, forwordingList));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因为我们的示例比较简单, 使用正则表达式并未减少代码行数, 只不过使用正则表达式扩展性更强了</p>
-<h3 id="使用lambda表达式"><a href="#使用lambda表达式" class="headerlink" title="使用lambda表达式"></a>使用lambda表达式</h3><p>为了压缩代码行数,以及更加清晰的语义表达, 我们还可以使用大杀器lambda表达式, 经过压缩后代码如下:</p>
-<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> List&lt;Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;&gt; GetConfig2()</span><br><span class="line">&#123;</span><br><span class="line">    Regex r = <span class="keyword">new</span> Regex(<span class="string">@"^(\d+)(\|.+:\d+)+"</span>);</span><br><span class="line">    Regex r2 = <span class="keyword">new</span> Regex(<span class="string">@"\G\|([\d\.]+):(\d+)"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> File.ReadAllLines(<span class="string">"forward.txt"</span>).ToList()</span><br><span class="line">        .Where( i =&gt; r.IsMatch(i))</span><br><span class="line">        .Select( i=&gt; r.Match(i))</span><br><span class="line">        .Select( i=&gt; <span class="keyword">new</span>  Tuple&lt;IPEndPoint, List&lt;IPEndPoint&gt;&gt;(</span><br><span class="line">            <span class="keyword">new</span> IPEndPoint(IPAddress.Any, <span class="keyword">int</span>.Parse(i.Groups[<span class="number">1</span>].Value)),</span><br><span class="line">            (<span class="keyword">from</span> Match j <span class="keyword">in</span> r2.Matches(i.Groups[<span class="number">2</span>].Value) <span class="function"><span class="keyword">select</span> new <span class="title">IPEndPoint</span>(<span class="params">IPAddress.Parse(j.Groups[<span class="number">1</span>].Value</span>), <span class="keyword">int</span>.<span class="title">Parse</span>(<span class="params">j.Groups[<span class="number">2</span>].Value</span>))).<span class="title">ToList</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">            )           </span></span><br><span class="line"><span class="function">        ).<span class="title">ToList</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到代码行数下降了很多, 而且这种方式的表达更加清晰。<a href="https://github.com/xuqifzz/TcpForwording/blob/master/Program.cs" target="_blank" rel="noopener">完整代码</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://xuqifzz.github.io/2014/05/11/高可用的端口转发/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="徐琦">
-      <meta itemprop="description" content="专注于应用程序框架开发">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="徐琦的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2014/05/11/高可用的端口转发/" class="post-title-link" itemprop="url">高可用的端口转发</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2014-05-11 01:45:37" itemprop="dateCreated datePublished" datetime="2014-05-11T01:45:37+08:00">2014-05-11</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-25 21:26:30" itemprop="dateModified" datetime="2019-01-25T21:26:30+08:00">2019-01-25</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/网络运维/" itemprop="url" rel="index"><span itemprop="name">网络运维</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在windows下, 利用<code>netsh</code>可以实现端口转发功能, 能满足大部分日常需求, 但在某些情况下, 在后端节点不可用的时候, 需要将数据转发至另一节点, 这时就只能自行编码实现了。</p>
-<p>本文将使用C#做一个简单的实现: <a href="https://github.com/xuqifzz/TcpForwording/blob/master/Proxy.cs" target="_blank" rel="noopener">完整代码</a></p>
-<h3 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h3><ul>
-<li>因为需要转发数据, 所以程序肯定是要监听端口的</li>
-<li>为了避免数据混乱和复杂性, 这里每个端口只接收一个连接, 所以接收到新连接后, 关闭端口监听</li>
-<li>若长时间没有数据通讯, 则主动关闭连接, 释放资源</li>
-<li>开启两个工作线程,  一个叫代理线程, 一个叫转发线程</li>
-</ul>
-<h3 id="代理线程工作流程"><a href="#代理线程工作流程" class="headerlink" title="代理线程工作流程"></a>代理线程工作流程</h3><p>代理线程负责接收外来连接, 并确保同一时间只有一个外来连接, 接收到连接后读取数据, 读取到数据后, 将数据转发到指定目标地址。</p>
-<pre class="mermaid">graph LR
-    listen[监听]
-    accept[接受连接]
-    read[读取数据]
-    forwarding[转发数据]
-    listen-->accept
-    accept-->read
-    read-->forwarding
-    forwarding-->read</pre>
-
-
-
-<p>主要代码:<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line">server = <span class="keyword">new</span> TcpListener(listen);</span><br><span class="line">server.Start(<span class="number">1</span>);</span><br><span class="line">client = server.AcceptTcpClient();</span><br><span class="line">server.Stop();      <span class="comment">//停止监听, 同一时间只接收一个连接</span></span><br><span class="line">server = <span class="literal">null</span>;</span><br><span class="line">listenStream = client.GetStream();</span><br><span class="line">listenStream.ReadTimeout = READ_TIMEOUT;</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> len = listenStream.Read(buffer, <span class="number">0</span>, BUFF_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] tmp = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        Array.Copy(buffer, tmp, len);</span><br><span class="line">        Forwarding(tmp);  <span class="comment">//转发数据</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//.. 处理连接中断</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="转发线程工作流程"><a href="#转发线程工作流程" class="headerlink" title="转发线程工作流程"></a>转发线程工作流程</h3><p>转发线程负责连接目标地址, 一个连不上再去连接下一个, 当连上后, 等待接收数据, 接收到数据后, 将数据转发到代理连接上去。</p>
-<p>主要代码:<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line">client = <span class="keyword">new</span> TcpClient();</span><br><span class="line"><span class="keyword">var</span> result = client.BeginConnect(currentEndPoint.Address, currentEndPoint.Port, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">var</span> success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(CONNECT_TIMEOUT));</span><br><span class="line"><span class="keyword">if</span> (!success)   <span class="comment">//超时处理</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">"connect &#123;0&#125; timeout"</span>, currentEndPoint);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125;</span><br><span class="line">client.EndConnect(result);</span><br><span class="line">forwardingStream = client.GetStream();</span><br><span class="line">forwardingStream.ReadTimeout = READ_TIMEOUT;</span><br><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> len = forwardingStream.Read(buffer, <span class="number">0</span>, BUFF_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] tmp = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        Array.Copy(buffer, tmp, len);</span><br><span class="line">        Response(tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//.. 处理连接中断</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2218,6 +2185,8 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="徐琦">
+            
               <p class="site-author-name" itemprop="name">徐琦</p>
               <p class="site-description motion-element" itemprop="description">专注于应用程序框架开发</p>
           </div>
@@ -2229,7 +2198,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2285,7 +2254,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">8</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -2296,6 +2269,32 @@
           
 
           
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/xuqifzz" title="GitHub &rarr; https://github.com/xuqifzz" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:mail@xuqi.io" title="E-Mail &rarr; mailto:mail@xuqi.io" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
 
           
 
@@ -2304,20 +2303,32 @@
             <div class="links-of-blogroll motion-element links-of-blogroll-block">
               <div class="links-of-blogroll-title">
                 <i class="fa  fa-fw fa-link"></i>
-                Links
+                快速访问
               </div>
               <ul class="links-of-blogroll-list">
                 
                   <li class="links-of-blogroll-item">
-                    <a href="https://www.baidu.com/" title="https://www.baidu.com/" rel="noopener" target="_blank">百度</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://www.google.com/" title="https://www.google.com/" rel="noopener" target="_blank">谷歌</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
                     <a href="https://www.zhihu.com/" title="https://www.zhihu.com/" rel="noopener" target="_blank">知乎</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.bilibili.com/" title="https://www.bilibili.com/" rel="noopener" target="_blank">bilibili</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://translate.google.com/#view=home&op=translate&sl=en&tl=zh-CN" title="https://translate.google.com/#view=home&op=translate&sl=en&tl=zh-CN" rel="noopener" target="_blank">谷歌翻译</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://open.163.com/" title="https://open.163.com/" rel="noopener" target="_blank">网易公开课</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://stackoverflow.com/" title="https://stackoverflow.com/" rel="noopener" target="_blank">stackoverflow</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.icourse163.org/" title="https://www.icourse163.org/" rel="noopener" target="_blank">中国大学MOOC</a>
                   </li>
                 
               </ul>
@@ -2346,7 +2357,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2008 – <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -2369,6 +2380,8 @@
   <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
 
 
+
+  <div class="footer-custom">Hosted by <a target="_blank" rel="external nofollow" href="https://pages.github.com/">GitHub Pages</a></div>
 
 
 
